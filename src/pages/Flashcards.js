@@ -30,7 +30,7 @@ const Flashcards = () => {
                     const data = await response.json();
                     setDeck(data);
                     console.log("Successful deck load");
-                    setError("Successful fetch!") // we don't actually show the user this, but....
+                    setError("")
 
                 } else {
                     console.error("Error fetching deck");

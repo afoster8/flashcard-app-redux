@@ -1,9 +1,40 @@
+.view-all-decks {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+}
+
+.manage-folders-button-container {
+    position: absolute;
+    right: 0px;
+    width: 30%;
+    margin-bottom: 50px;
+}
+
+.manage-folders-button {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+}
 
 .deck-container {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
     gap: 5px;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+}
+
+.title h1 {
+    width: 20%;
 }
 
 .deck-list {
@@ -59,12 +90,13 @@ a {
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal; 
+    white-space: normal;
 }
 
 .deck-item.selected h3 {
-    white-space: nowrap; 
+    white-space: nowrap;
 }
+
 .deck-item.selected {
     background-color: #e74c3c;
 }

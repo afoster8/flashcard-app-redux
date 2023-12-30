@@ -12,6 +12,7 @@ import NoPage from "./pages/NoPage";
 import Download from "./pages/Download";
 import EditDeck from "./pages/EditDeck"; 
 import Flashcards from "./pages/Flashcards";
+import Folders from "./pages/Folders";
 import "./index.css";
 
 /* it all starts from here */
@@ -34,6 +35,7 @@ export default function App() {
           <Route index element={<Home loggedIn={loggedIn} />} />
           <Route path="view-all-decks" element={<ViewAllDecks />} />
           <Route path="/download-deck/:id" element={<Download />} />
+          <Route path="/folders" element={<Folders />} />
           <Route path="/edit-deck/:id" element={<EditDeck />} />
           <Route path="/start-flashcards/:id" element={<Flashcards />} />
           <Route path="create-new-deck" element={<CreateNewDeck />} />

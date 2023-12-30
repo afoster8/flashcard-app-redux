@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   userID: { type: String, required: true, unique: true },
   pin: { type: String, required: true },
   decks: [{ type: Deck.schema }], 
+  folders: [{ type: String }]
 });
 
 const User = mongoose.model("User", userSchema);

@@ -8,6 +8,8 @@ import "./ViewAllDecks.css";
 const ViewAllDecks = () => {
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState();
+  const [folders, setFolders] = useState([]);
+  const [selectedFolder, setSelectedFolder] = useState(null);
   const [error, setError] = useState(""); // flag to tell user about errors
 
   /* Use Effect -- triggers on page load */
@@ -45,8 +47,14 @@ const ViewAllDecks = () => {
     };
 
     fetchDecks();
+    fetchFolders();
   }, []);
 
+
+  /* if the deck hasn't loaded from UseEffect yet, we're still loading*/
+  if (!decks) {
+    return <p>Loading decks...</p>;
+  }
 
 
   /* Page event functions */
@@ -67,25 +75,27 @@ const ViewAllDecks = () => {
     /* otherwise mark as selected */
     setSelectedDeck(selectedDeck === deck ? null : deck);
     deckElement.classList.toggle('selected');
+    console.log("made it to the end");
 
   };
 
-  /* if the deck hasn't loaded from UseEffect yet, we're still loading*/
-  if (!decks) {
-    return <p>Loading decks...</p>;
-  }
+
 
   /* Show all the decks in the user's account */
   const showAllDecks = () => {
 
-    if (decks.length === 0) {
+    const filteredDecks = selectedFolder
+      ? decks.filter((deck) => deck.folder.includes(selectedFolder))
+      : decks;
+
+    if (filteredDecks.length === 0) {
       return <p>No decks found.</p>;
     }
 
     /* Populate the list of decks */
     return (
       <div className="deck-list">
-        {decks.map((deck) => (
+        {filteredDecks.map((deck) => (
           <div
             key={deck.id}
             id={`deck-${deck.id}`}
@@ -96,7 +106,7 @@ const ViewAllDecks = () => {
             <h3>{deck.name}</h3>
 
             {selectedDeck === deck && (
-              <div class="deck-item-button-container">
+              <div className="deck-item-button-container">
                 <Link to={`/start-flashcards/${deck.id}`}>
                   <button className="flashcards-button">
                     Start Flashcards
@@ -123,12 +133,59 @@ const ViewAllDecks = () => {
     );
   };
 
-  /* Populate the page */
+  /* fetches the user folders */
+  const fetchFolders = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/auth/get-folders", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFolders(data);
+      } else {
+        setError("Error fetching folders");
+      }
+    } catch (error) {
+      setError("Error fetching folders");
+    }
+  };
+
+  /* selects the folder that was most recently clicked on, assigns it to state var */
+  const handleFolderClick = (folderName) => {
+    setSelectedFolder(folderName);
+    setSelectedDeck(null);
+  };
+
   return (
     <div className="page">
       <div className="view-all-decks">
-        <h1>All Decks</h1>
+        <div className="title">
+          <h1>All Decks</h1>
+          {/* Move the "Manage Folders" button to the right */}
+          <div className="manage-folders-button-container">
+            <Link to="/folders">
+              <button className="manage-folders-button">Manage Folders</button>
+            </Link>
+          </div>
+        </div>
+
         {error && <p className="error-message">{error}</p>}
+
+        <div className="folder-buttons">
+          <button onClick={() => handleFolderClick(null)}>All</button>
+
+          {folders.map((folder) => (
+            <button key={folder} onClick={() => handleFolderClick(folder)}>
+              {folder}
+            </button>
+          ))}
+        </div>
+
         <div className="deck-container">{showAllDecks()}</div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./EditDeck.css";
 
 /* Edit Deck page 
    We get here through the ViewAllCards page
@@ -7,6 +8,7 @@ import { useParams } from "react-router-dom";
 const EditDeck = () => {
     const { id } = useParams(); 
     const [deck, setDeck] = useState(null);
+    const [userFolders, setUserFolders] = useState([]);
     const [error, setError] = useState(false); // flag for successful import or some other error
 
     /* Use Effect -- triggers on page load */
@@ -39,8 +41,32 @@ const EditDeck = () => {
             }
         };
 
-        fetchDeck();
+        const fetchUserFolders = async () => {
+            try {
+                const response = await fetch("http://localhost:3001/auth/get-folders", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    credentials: "include",
+                });
 
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserFolders(data);
+                    console.log("Successful user folders load");
+                } else {
+                    console.error("Error fetching user folders");
+                    setError("Error fetching user folders");
+                }
+            } catch (error) {
+                console.error("Error fetching user folders", error);
+                setError("Error fetching user folders");
+            }
+        };
+
+        fetchDeck();
+        fetchUserFolders();
     }, [id]);
 
     /* Show loading screen if we're waiting on a response above */
@@ -51,13 +77,20 @@ const EditDeck = () => {
 
 
 
-    /* Page event functions - handleSaveDeck, handleKeyDown, handleAddCard */
+    /* Page event functions */
+
+    /* Assigns the deck to a folder */
+    const handleAssignToFolder = (folderName) => {
+        setDeck({ ...deck, folder: [folderName] });
+        console.log(deck);
+    };
 
     /* Event when you hit save -- PUTS a new deck in your user account where the old one used to be */
     const handleSaveDeck = async () => {
         setError("");
 
         try {
+            console.log(deck);
             const response = await fetch(`http://localhost:3001/auth/update-deck/${id}`, {
                 method: "PUT",
                 headers: {
@@ -121,6 +154,18 @@ const EditDeck = () => {
         <div className="page">
             <div className="create-new-deck">
                 <h1>Edit Deck</h1>
+
+                <div className="assign-folder-container">
+                    <h4>Assign to Folder: </h4>
+                    <select onChange={(e) => handleAssignToFolder(e.target.value)}>
+                        <option value="">Select Folder</option>
+                        {userFolders.map((folder, index) => (
+                            <option key={index} value={folder}>
+                                {folder}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 
                 {error && <p className="error-message">{error}</p>}
 

@@ -22,7 +22,7 @@ const verifyToken = (req, res, next) => {
       return res.status(401).json({ error: "Unauthorized: Invalid token" });
     }
 
-    req.userId = decoded.userId; 
+    req.userId = decoded.userId;
     next();
 
   });
@@ -56,7 +56,7 @@ router.post("/register", async (req, res, next) => {
     const nextUserID = highestUser ? highestUser.userID + 1 : 0;
 
     // Create a new user with an empty array for decks
-    const user = new User({ username, pin: hashedPin, userID: nextUserID, decks: [] });
+    const user = new User({ username, pin: hashedPin, userID: nextUserID, decks: [], folders: [] });
     await user.save();
 
     res.status(201).json({ message: "User registered successfully" });
@@ -105,7 +105,8 @@ router.post("/create-deck", verifyToken, async (req, res) => {
 
     const newDeck = new Deck({
       name: deckName,
-      cards: cards || [], 
+      folder: [],
+      cards: cards || [],
     });
 
     const user = await User.findOne({ _id: req.userId });
@@ -117,6 +118,28 @@ router.post("/create-deck", verifyToken, async (req, res) => {
     await user.save();
 
     res.status(201).json({ message: "Deck created successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Define a route to update the folder field of a user
+router.put("/update-folders", verifyToken, async (req, res) => {
+
+  try {
+    const {folders} = req.body;
+
+    const user = await User.findOne({ _id: req.userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    user.folders = folders;
+    await user.save();
+
+    res.status(201).json({ message: "Folder updated successfully" });
 
   } catch (error) {
     console.error(error);
@@ -137,6 +160,7 @@ router.get("/get-decks", verifyToken, async (req, res) => {
       id: deck._id,
       name: deck.name,
       cards: deck.cards,
+      folder: deck.folder
     }));
 
     res.status(200).json({ decks });
@@ -165,7 +189,30 @@ router.get("/get-deck/:id", verifyToken, async (req, res) => {
       id: deck._id,
       name: deck.name,
       cards: deck.cards,
+      folder: deck.folder
     });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Define a route to get all the folders for a user
+router.get("/get-folders", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const folders = user.folders;
+
+    if (!folders) {
+      return res.status(404).json({ error: "Folders not found" });
+    }
+
+    res.status(200).json(folders);
 
   } catch (error) {
     console.error(error);
@@ -178,7 +225,9 @@ router.get("/get-deck/:id", verifyToken, async (req, res) => {
 router.put("/update-deck/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, cards } = req.body;
+    const { name, cards, folder } = req.body;
+
+    console.log(folder);
 
     const user = await User.findOne({ _id: req.userId });
     if (!user) {
@@ -193,6 +242,7 @@ router.put("/update-deck/:id", verifyToken, async (req, res) => {
     // Update the deck in the user's decks array
     user.decks[deckIndex].name = name;
     user.decks[deckIndex].cards = cards;
+    user.decks[deckIndex].folder = folder;
 
     await user.save();
 
@@ -235,16 +285,12 @@ router.patch("/update-card/:deckId/:cardId", verifyToken, async (req, res) => {
     deck.cards[cardIndex].front = front;
     deck.cards[cardIndex].back = back;
     deck.cards[cardIndex].starred = starred;
-    console.log(deck.cards[cardIndex].starred);
-
-    console.log(front);
-    console.log(back);
 
     try {
       await user.save();
-  } catch (error) {
+    } catch (error) {
       console.error("Error saving user:", error);
-  }  
+    }
 
     res.status(200).json({ message: "Card updated successfully" });
   } catch (error) {

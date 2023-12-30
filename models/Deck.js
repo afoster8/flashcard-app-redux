@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 const deckSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  folder: { type: String }, 
+  folder: [{ type: String }], 
   cards: [{ type: Card.schema }],
 });
 
