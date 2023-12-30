@@ -33,7 +33,7 @@ const Layout = ({ loggedIn, setLoggedIn }) => {
         <div className="sidebar">
 
           <div className="sidebar-container-top">
-            
+
             <div className="sidebar-option">
               <Link to="/">
                 <button className="sidebar-option-button">Home</button>
@@ -73,6 +73,13 @@ const Layout = ({ loggedIn, setLoggedIn }) => {
             {loggedIn ? (
 
               <>
+
+                <div className="sidebar-option">
+                  <Link to="/user-account">
+                    <button className="sidebar-option-button">User Account</button>
+                  </Link>
+                </div>
+                
                 <div className="sidebar-option">
                   <button className="sidebar-option-button" onClick={handleLogout}>
                     Logout

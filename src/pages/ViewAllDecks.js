@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./ViewAllDecks.css";
+import { downloadJson, downloadTxt } from "../components/Download";
 
 /* ViewAllDecks Page
    Shows all of the decks in the user's deck list
@@ -57,31 +58,30 @@ const ViewAllDecks = () => {
   }
 
 
-  /* Page event functions */
+  /* fetches the user folders */
+  const fetchFolders = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/auth/get-folders", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+      });
 
-  /* Triggers when user clicks on a deck 
-     Marks that deck as selected. Used for conditional CSS element display
-     of flashcard, edit deck, and download buttons for navigation
-     to deck pages */
-  const handleDeckClick = (deck) => {
-    const deckElement = document.getElementById(`deck-${deck.id}`);
-
-    /* toggle off selection if it is already selected*/
-    if (selectedDeck) {
-      const selectedDeckElement = document.getElementById(`deck-${selectedDeck.id}`);
-      selectedDeckElement.classList.remove('selected');
+      if (response.ok) {
+        const data = await response.json();
+        setFolders(data);
+      } else {
+        setError("Error fetching folders");
+      }
+    } catch (error) {
+      setError("Error fetching folders");
     }
-
-    /* otherwise mark as selected */
-    setSelectedDeck(selectedDeck === deck ? null : deck);
-    deckElement.classList.toggle('selected');
-    console.log("made it to the end");
-
   };
 
-
-
-  /* Show all the decks in the user's account */
+  /* Main logic of the page -- shows decks based on folder filtering logic 
+  or all decks, depending on user choice. Edit/download/start flashcards only shows when deck is selected by user*/
   const showAllDecks = () => {
 
     const filteredDecks = selectedFolder
@@ -118,11 +118,15 @@ const ViewAllDecks = () => {
                   </button>
                 </Link>
 
-                <Link to={`/download-deck/${selectedDeck.id}`}>
-                  <button className="deck-buttons">
-                    Download Deck
+                <div className="download-buttons-container">
+                  <button className="download-buttons" onClick={(e) => handleDownload(e, "json")}>
+                    Download as JSON
                   </button>
-                </Link>
+                  <button className="download-buttons" onClick={(e) => handleDownload(e, "txt")}>
+                    Download as TSV
+                  </button>
+                </div>
+
               </div>
             )}
 
@@ -133,27 +137,38 @@ const ViewAllDecks = () => {
     );
   };
 
-  /* fetches the user folders */
-  const fetchFolders = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/auth/get-folders", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        credentials: "include",
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setFolders(data);
-      } else {
-        setError("Error fetching folders");
-      }
-    } catch (error) {
-      setError("Error fetching folders");
+
+  /* Page event functions */
+
+  /* Triggers when user clicks on a deck 
+     Marks that deck as selected. Used for conditional CSS element display
+     of flashcard, edit deck, and download buttons for navigation
+     to deck pages */
+  const handleDeckClick = (deck) => {
+    const deckElement = document.getElementById(`deck-${deck.id}`);
+
+    /* toggle off selection if it is already selected*/
+    if (selectedDeck) {
+      const selectedDeckElement = document.getElementById(`deck-${selectedDeck.id}`);
+      selectedDeckElement.classList.remove('selected');
     }
+
+    /* otherwise mark as selected */
+    setSelectedDeck(selectedDeck === deck ? null : deck);
+    deckElement.classList.toggle('selected');
+
   };
+
+  /* download as either json or TSV 
+     note that TSVs are in the same format as the import requires
+     (i.e. \n\n\n between cards and \t between front,back)
+     this allows for line breaks in cards */
+
+  const handleDownload = (e, choice) => {
+    e.stopPropagation();
+    choice === "json" ? downloadJson(selectedDeck) : downloadTxt(selectedDeck);
+  }
 
   /* selects the folder that was most recently clicked on, assigns it to state var */
   const handleFolderClick = (folderName) => {
@@ -161,12 +176,12 @@ const ViewAllDecks = () => {
     setSelectedDeck(null);
   };
 
+  /* Populate the page */
   return (
     <div className="page">
       <div className="view-all-decks">
         <div className="title">
           <h1>All Decks</h1>
-          {/* Move the "Manage Folders" button to the right */}
           <div className="manage-folders-button-container">
             <Link to="/folders">
               <button className="manage-folders-button">Manage Folders</button>
@@ -176,11 +191,11 @@ const ViewAllDecks = () => {
 
         {error && <p className="error-message">{error}</p>}
 
-        <div className="folder-buttons">
-          <button onClick={() => handleFolderClick(null)}>All</button>
+        <div className="folder-buttons-container">
+          <button className="folder-buttons" onClick={() => handleFolderClick(null)}>All</button>
 
           {folders.map((folder) => (
-            <button key={folder} onClick={() => handleFolderClick(folder)}>
+            <button className="folder-buttons" key={folder} onClick={() => handleFolderClick(folder)}>
               {folder}
             </button>
           ))}

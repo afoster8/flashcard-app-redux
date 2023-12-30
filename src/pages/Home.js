@@ -1,5 +1,6 @@
 import React from "react";
 
+/* Basic home page -- shows one message if you're logged in, and another if you are not */
 const Home = ({ loggedIn }) => {
 
     return (

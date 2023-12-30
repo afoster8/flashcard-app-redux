@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./Folders.css";
 
+/* Manage folders page 
+    Add and delete folders 
+    You cannot add items to folders here. */
 const Folders = () => {
     const [folders, setFolders] = useState(null);
     const [newFolderName, setNewFolderName] = useState("");
@@ -37,6 +40,11 @@ const Folders = () => {
 
         fetchFolders();
     }, []);
+
+
+    
+
+    /* Page event functions */
 
     /* Event when you hit save -- PUTS a new folder in your user account where the old one used to be */
     const handleSaveFolders = async () => {
@@ -94,6 +102,7 @@ const Folders = () => {
                 <h1>Folders</h1>
                 <p>Add or delete folders. Please note that deleting a folder will NOT delete the decks it contains.</p>
                 <p>Decks must be added to folders on their respective edit deck pages.</p>
+                <p>Your changes are not saved until you hit the save changes button!</p>
                 {error && <p className="error-message">{error}</p>}
 
                 <div className="add-folder-container">

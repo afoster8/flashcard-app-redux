@@ -82,7 +82,7 @@ const Register = () => {
       <div className="register">
         <h1> Register </h1>
 
-        <p> Create a username and pin so you can save your cards! </p>
+        <p> Create a username and PIN so you can save your cards. </p>
         {error && <p className="error-message">{error}</p>}
 
         <div className="user-info">
@@ -90,7 +90,7 @@ const Register = () => {
             <input
               className="username-input"
               minLength={4}
-              maxLength={15}
+              maxLength={30}
               type="text"
               placeholder="username"
               value={username}

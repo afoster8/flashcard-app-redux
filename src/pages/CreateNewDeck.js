@@ -1,12 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CreateNewDeck.css";
 
 /* CreateNewDeck page, for adding a new deck to the user's deck field
    We get here through the Layout */
 const CreateNewDeck = () => {
     const [deckName, setDeckName] = useState("");
+    const [folders, setFolders] = useState([]);
+    const [selectedFolder, setSelectedFolder] = useState("");
     const [cards, setCards] = useState([{ front: "", back: "", starred: false }]);
     const [error, setError] = useState(""); // flag for successful import or some other error
+
+    useEffect(() => {
+        setError("");
+
+        /* fetches the user folders */
+        const fetchFolders = async () => {
+            try {
+                const response = await fetch("http://localhost:3001/auth/get-folders", {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    credentials: "include",
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setFolders(data);
+                } else {
+                    setError("Error fetching folders");
+                }
+            } catch (error) {
+                setError("Error fetching folders");
+            }
+        };
+
+        fetchFolders();
+
+    }, []);
 
     /* Happens upon hitting the save button */
     /* POSTS your new deck to your user account deck field */
@@ -14,7 +45,7 @@ const CreateNewDeck = () => {
         setError("");
 
         if (!deckName) {
-            setError("You must have a name for your deck."); 
+            setError("You must have a name for your deck.");
             return;
         }
 
@@ -32,6 +63,8 @@ const CreateNewDeck = () => {
             return;
         }
 
+        var folderArray = [selectedFolder];
+
         /* POST the deck you just made to the db */
         const response = await fetch("http://localhost:3001/auth/create-deck", {
             method: "POST",
@@ -42,7 +75,8 @@ const CreateNewDeck = () => {
 
             body: JSON.stringify({
                 deckName,
-                cards: sanitizedCards, // create-deck will make name + cards into a deck
+                cards: sanitizedCards,
+                folderArray // create-deck will make name + cards into a deck
             }),
 
             credentials: "include",
@@ -51,7 +85,7 @@ const CreateNewDeck = () => {
         /* If everything went well, empty page out and set success flag */
         if (response.ok) {
             console.log("Deck created successfully");
-            setError("Successful import!");
+            setError("Successful deck add!");
             setDeckName("");
             setCards([{ front: "", back: "", starred: false }]);
 
@@ -63,6 +97,11 @@ const CreateNewDeck = () => {
 
 
     /* Page event functions */
+
+    /* Keep track of folder assignment */
+    const handleAssignToFolder = (e) => {
+        setSelectedFolder(e);
+    }
 
     /* Trigged when we hit add card, generates another field for user input */
     const handleAddCard = () => {
@@ -107,7 +146,31 @@ const CreateNewDeck = () => {
     return (
         <div className="page">
             <div className="create-new-deck">
-                <h1>Create a new Deck</h1>
+                <div className="title">
+                    <h1>Create a New Deck</h1>
+                    <div className="save-deck-container">
+                        <button className="save-button-top" onClick={handleSaveDeck}>Save Deck</button>
+                    </div>
+                </div>
+
+                <p> Create a new flashcard deck from scratch. </p>
+                <p> Cards that lack a front or back will have a (...)
+                    added to the missing field, and cards that are entirely empty will be deleted. </p>
+                <p>Use Shift+Enter to go to next line within a card field. </p>
+
+                <br />
+
+                <div className="assign-folder-container">
+                    <h4>Assign to Folder: </h4>
+                    <select onChange={(e) => handleAssignToFolder(e.target.value)}>
+                        <option value="">Select Folder</option>
+                        {folders.map((folder, index) => (
+                            <option key={index} value={folder}>
+                                {folder}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
                 {error && <p className="error-message">{error}</p>}
 
@@ -161,13 +224,15 @@ const CreateNewDeck = () => {
                         ))}
                     </div>
 
-                    <button className="add-card" onClick={handleAddCard}>
-                        Add New Card
-                    </button>
-                    <br />
-                    <button className="save-deck" onClick={handleSaveDeck}>
-                        Save Deck
-                    </button>
+                    <div className="add-card-container">
+                        <button className="add-card" onClick={handleAddCard}>Add New Card</button>
+                    </div>
+
+                    <div className="save-button-container">
+                        <button className="save-deck" onClick={handleSaveDeck}>Save Deck</button>
+                        <br />
+                    </div>
+
                 </div>
             </div>
         </div>

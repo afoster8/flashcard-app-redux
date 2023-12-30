@@ -55,7 +55,7 @@ button {
   border-radius: 5px;
   margin-right: 10px;
   margin-top: 10px;
-  width: 30%;
+  width: 42%;
 }
 
 button:hover {
@@ -74,4 +74,75 @@ button:hover {
 .error-message {
   color: #c0392b;
   font-weight: bold;
+  padding: 0px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.delete-card {
+  background-color: #e74c3c;
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title h1 {
+  width: 30%;
+  margin-bottom: 0px;
+}
+
+.add-card-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.add-card {
+  width: 60%;
+}
+
+.save-deck {
+  width: 90%;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.save-button-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.question-answer {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.question-answer-group {
+  flex: 1;
+  margin-right: 50px;
+}
+
+.question-answer-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.tsv-area {
+  width: 90%;
 }

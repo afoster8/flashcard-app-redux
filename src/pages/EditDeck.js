@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./EditDeck.css";
 
 /* Edit Deck page 
    We get here through the ViewAllCards page
    Associated with a specific user deck, noted by ID */
 const EditDeck = () => {
-    const { id } = useParams(); 
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [deck, setDeck] = useState(null);
     const [userFolders, setUserFolders] = useState([]);
     const [error, setError] = useState(false); // flag for successful import or some other error
 
-    /* Use Effect -- triggers on page load */
+    /* Use Effect -- triggers on page load 
+        Fetch both the deck we're working on and the user's folders */
     useEffect(() => {
         setError("");
 
@@ -41,6 +43,7 @@ const EditDeck = () => {
             }
         };
 
+        /* Fetch the user's current folders */
         const fetchUserFolders = async () => {
             try {
                 const response = await fetch("http://localhost:3001/auth/get-folders", {
@@ -59,6 +62,7 @@ const EditDeck = () => {
                     console.error("Error fetching user folders");
                     setError("Error fetching user folders");
                 }
+
             } catch (error) {
                 console.error("Error fetching user folders", error);
                 setError("Error fetching user folders");
@@ -69,6 +73,7 @@ const EditDeck = () => {
         fetchUserFolders();
     }, [id]);
 
+
     /* Show loading screen if we're waiting on a response above */
     if (!deck) {
         return <p>Loading...</p>;
@@ -76,21 +81,13 @@ const EditDeck = () => {
 
 
 
-
     /* Page event functions */
-
-    /* Assigns the deck to a folder */
-    const handleAssignToFolder = (folderName) => {
-        setDeck({ ...deck, folder: [folderName] });
-        console.log(deck);
-    };
 
     /* Event when you hit save -- PUTS a new deck in your user account where the old one used to be */
     const handleSaveDeck = async () => {
         setError("");
 
         try {
-            console.log(deck);
             const response = await fetch(`http://localhost:3001/auth/update-deck/${id}`, {
                 method: "PUT",
                 headers: {
@@ -104,30 +101,68 @@ const EditDeck = () => {
 
             if (response.ok) {
                 console.log("Deck updated successfully");
-                setError("Successful import!"); // flag for informing user of successful import
+                setError("Successful edit!"); // flag for informing user of successful import
 
             } else {
                 console.error("Some other type of error");
-                setError("Error updating deck");
+                setError("Error updating deck. Check if there are empty fields. ");
             }
 
         } catch (error) {
             console.error("Error updating deck", error);
-            setError("Error updating deck");
+            setError("Error updating deck.");
+        }
+    };
+
+    /* DELETE deck from user's deck field */
+    const handleDeleteDeck = async () => {
+        setError("");
+
+        try {
+            const response = await fetch(`http://localhost:3001/auth/delete-deck/${id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                console.log("Deck deleted successfully");
+                navigate("/view-all-decks");
+
+            } else {
+                console.error("Error deleting deck");
+                setError("Error deleting deck. ");
+            }
+        } catch (error) {
+            console.error("Error deleting deck", error);
+            setError("Error deleting deck. ");
         }
     };
 
     /* Initiates a new card for user input */
     const handleAddCard = () => {
+        setError("");
+
         setDeck({
             ...deck,
             cards: [...deck.cards, { front: "", back: "", starred: false }],
         })
     };
 
+    /* Assigns the deck to a folder */
+    const handleAssignToFolder = (folderName) => {
+        setError("");
+        setDeck({ ...deck, folder: [folderName] });
+    };
+
+
 
     /* move down the page as you hit enter 
-       you do have to hit enter twice when you just added a new card */
+       you do have to hit enter twice when you just added a new card 
+       probably because of state update stuff */
     const handleKeyDown = (event, index) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
@@ -153,7 +188,13 @@ const EditDeck = () => {
     return (
         <div className="page">
             <div className="create-new-deck">
-                <h1>Edit Deck</h1>
+                <div className="title">
+                    <h1>Edit Deck</h1>
+                    <div className="delete-deck-container">
+                        <button onClick={handleSaveDeck}>Save Deck</button>
+                        <button className="delete-deck" onClick={handleDeleteDeck}>Delete Deck</button>
+                    </div>
+                </div>
 
                 <div className="assign-folder-container">
                     <h4>Assign to Folder: </h4>
@@ -166,7 +207,7 @@ const EditDeck = () => {
                         ))}
                     </select>
                 </div>
-                
+
                 {error && <p className="error-message">{error}</p>}
 
                 <div className="new-deck-content">
@@ -239,9 +280,14 @@ const EditDeck = () => {
                         ))}
                     </div>
 
-                    <button className="add-card" onClick={handleAddCard}>Add New Card</button>
-                    <br />
-                    <button className="save-deck" onClick={handleSaveDeck}>Save Deck</button>
+                    <div className="add-card-container">
+                        <button className="add-card" onClick={handleAddCard}>Add New Card</button>
+                    </div>
+
+                    <div className="save-button-container">
+                        <button className="save-deck" onClick={handleSaveDeck}>Save Deck</button>
+                        <br />
+                    </div>
                 </div>
             </div>
         </div>

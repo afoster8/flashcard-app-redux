@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "./FlashCardGame.css";
+import "./Flashcards.css";
 
 /* Flashcards page
    This is where the magic happens. */

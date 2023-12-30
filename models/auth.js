@@ -60,7 +60,6 @@ router.post("/register", async (req, res, next) => {
     await user.save();
 
     res.status(201).json({ message: "User registered successfully" });
-    console.log("User registered successfully");
 
   } catch (error) {
     console.error(error);
@@ -89,7 +88,6 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, "your-secret-key", { expiresIn: "500h" });
 
     res.status(200).json({ token });
-    console.log("User login success!");
 
   } catch (error) {
     console.error(error);
@@ -97,15 +95,87 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Update username route
+router.put("/update-username", verifyToken, async (req, res) => {
+  try {
+    const { newUsername } = req.body;
+
+    // Check if the user exists
+    const user = await User.findOne({ _id: req.userId });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid username" });
+    }
+
+    user.username = newUsername;
+    await user.save();
+
+    res.status(200).json({ message: "Username updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// Update PIN route
+router.put("/update-pin", verifyToken, async (req, res) => {
+  try {
+    const { newPin } = req.body;
+
+    // Check if the user exists
+    const user = await User.findOne({ _id: req.userId });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid PIN" });
+    }
+
+    // Hash the pin before storing it
+    const hashedPin = await bcrypt.hash(newPin, 10);
+
+    user.pin = hashedPin;
+    await user.save();
+
+    res.status(200).json({ message: "PIN updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
+// Delete account route
+router.delete("/delete-account", verifyToken, async (req, res) => {
+  try {
+    // Check if the user exists
+    const user = await User.findOne({ _id: req.userId });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid PIN" });
+    }
+
+    await user.deleteOne();
+    res.status(200).json({ message: "Account deleted successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+
 // Define a route to create a new deck
 router.post("/create-deck", verifyToken, async (req, res) => {
 
+
   try {
-    const { deckName, cards } = req.body;
+    const { deckName, cards, folderArray } = req.body;
 
     const newDeck = new Deck({
       name: deckName,
-      folder: [],
+      folder: folderArray,
       cards: cards || [],
     });
 
@@ -125,11 +195,13 @@ router.post("/create-deck", verifyToken, async (req, res) => {
   }
 });
 
+
+
 // Define a route to update the folder field of a user
 router.put("/update-folders", verifyToken, async (req, res) => {
 
   try {
-    const {folders} = req.body;
+    const { folders } = req.body;
 
     const user = await User.findOne({ _id: req.userId });
     if (!user) {
@@ -146,6 +218,8 @@ router.put("/update-folders", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
 
 // Define a route to get all decks for a user
 router.get("/get-decks", verifyToken, async (req, res) => {
@@ -171,6 +245,8 @@ router.get("/get-decks", verifyToken, async (req, res) => {
   }
 });
 
+
+
 // Define a route to get a specific deck for a user
 router.get("/get-deck/:id", verifyToken, async (req, res) => {
   try {
@@ -191,6 +267,35 @@ router.get("/get-deck/:id", verifyToken, async (req, res) => {
       cards: deck.cards,
       folder: deck.folder
     });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Delete a specific deck route
+router.delete("/delete-deck/:id", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Find the index of the deck to be deleted
+    const deckIndex = user.decks.findIndex((deck) => deck._id == req.params.id);
+
+    if (deckIndex === -1) {
+      return res.status(404).json({ error: "Deck not found" });
+    }
+
+    // Use $pull operator to remove the specified deck from the array
+    await User.updateOne(
+      { _id: req.userId },
+      { $pull: { decks: { _id: req.params.id } } }
+    );
+
+    res.status(200).json({ message: "Deck deleted successfully" });
 
   } catch (error) {
     console.error(error);
@@ -226,8 +331,6 @@ router.put("/update-deck/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, cards, folder } = req.body;
-
-    console.log(folder);
 
     const user = await User.findOne({ _id: req.userId });
     if (!user) {
@@ -266,11 +369,6 @@ router.patch("/update-card/:deckId/:cardId", verifyToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
-    console.log(req.params);
-    console.log("user", user);
-    console.log("deckId", deckId);
-    console.log("cardId", cardId);
 
     const deck = user.decks.find((deck) => deck._id == deckId);
     if (!deck) {
