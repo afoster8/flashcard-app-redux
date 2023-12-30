@@ -9,11 +9,15 @@ import ImportDeck from "./pages/ImportDeck";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import NoPage from "./pages/NoPage";
-import UserData from "./components/UserData";
+import Download from "./pages/Download";
+import EditDeck from "./pages/EditDeck"; 
+import Flashcards from "./pages/Flashcards";
 import "./index.css";
 
+/* it all starts from here */
+
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false); // flag to send to Layout
 
   const handleLogin = () => {
     console.log("Logging in...");
@@ -23,13 +27,18 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout loggedIn={ loggedIn } setLoggedIn={ setLoggedIn } />}>
-          <Route index element={<Home loggedIn={ loggedIn } />} />
+        <Route
+          path="/"
+          element={<Layout loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}
+        >
+          <Route index element={<Home loggedIn={loggedIn} />} />
           <Route path="view-all-decks" element={<ViewAllDecks />} />
+          <Route path="/download-deck/:id" element={<Download />} />
+          <Route path="/edit-deck/:id" element={<EditDeck />} />
+          <Route path="/start-flashcards/:id" element={<Flashcards />} />
           <Route path="create-new-deck" element={<CreateNewDeck />} />
           <Route path="import-deck" element={<ImportDeck />} />
-          <Route path="user-data" element={<UserData />} />
-          <Route path="login" element={<Login onLogin={ handleLogin } />} />
+          <Route path="login" element={<Login onLogin={handleLogin} />} />
           <Route path="register" element={<Register />} />
           <Route path="*" element={<NoPage />} />
         </Route>

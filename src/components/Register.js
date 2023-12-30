@@ -2,34 +2,26 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+/* Register page 
+   Use this page to make a user account 
+   Adds your input to the db, but does not log you in */
 const Register = () => {
-  
+
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
   const [reenteredPin, setReenteredPin] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // send errors back to user
   const navigate = useNavigate();
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      
-      if (e.target.name === "username") {
-        document.getElementById("pin-input").focus();
-
-      } else if (e.target.name === "pin") {
-        document.getElementById("reentered-pin-input").focus();
-
-      } else if (e.target.name === "reenteredPin") {
-        handleRegister();
-      }
-    }
-  };
-
+  /* Triggered upon hitting register 
+    main logic of the page -- keep track of your entries 
+    and post to the db if all of your inputs are valid*/
   const handleRegister = async () => {
     setError("");
-    console.log("register button pressed!");
 
     try {
+      /* your username and pin have to meet certain parameters 
+        if they don't, errors will show to let you know what you did wrong */
       if (!username || !pin) {
         setError("Enter a username and password.");
         return;
@@ -44,22 +36,23 @@ const Register = () => {
         return;
       }
 
-      console.log("waiting for response!");
-
+      /* Tell the db to add a new user */
       const response = await axios.post("http://localhost:3001/auth/register", {
         username,
         pin,
       });
 
       console.log(response.data.message);
-      console.log("Success!");
       setError("");
 
+      /* navigate back to login page */
       navigate("/login");
 
     } catch (error) {
+
       if (error.response.data) {
         setError(error.response.data.error);
+
       } else {
         console.error(error);
         setError("An error occurred. Please try again.");
@@ -67,6 +60,23 @@ const Register = () => {
     }
   };
 
+  /* navigate down the fields with enter */
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+
+      if (e.target.name === "username") {
+        document.getElementById("pin-input").focus();
+
+      } else if (e.target.name === "pin") {
+        document.getElementById("reentered-pin-input").focus();
+
+      } else if (e.target.name === "reenteredPin") {
+        handleRegister();
+      }
+    }
+  };
+
+  /* Populate the page */
   return (
     <div className="page">
       <div className="register">
