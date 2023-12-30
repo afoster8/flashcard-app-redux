@@ -2,9 +2,12 @@ import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import "./Layout.css";
 
+/* Sidebar -- stays on the side at all times 
+  Uses props to find out whether we're logged in or not */
 const Layout = ({ loggedIn, setLoggedIn }) => {
   const navigate = useNavigate();
 
+  /* UseEffect to look for the token (and thus populate appropriate sidebar items!) */
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setLoggedIn(true);
@@ -12,6 +15,7 @@ const Layout = ({ loggedIn, setLoggedIn }) => {
 
   }, [setLoggedIn]);
 
+  /* Log out, removing your info from local storage and setting appropriate flags */
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
@@ -20,13 +24,16 @@ const Layout = ({ loggedIn, setLoggedIn }) => {
     console.log("Logging out...")
   };
 
+  /* Populate sidebar 
+    Remember that we only want to show ViewAllDecks, CreateNewDeck, ImportDeck, and Logout if we're logged in
+    and we only want to show Login and Register if we are *not* logged in! */
   return (
     <>
       <nav>
         <div className="sidebar">
 
           <div className="sidebar-container-top">
-            
+
             <div className="sidebar-option">
               <Link to="/">
                 <button className="sidebar-option-button">Home</button>
@@ -66,12 +73,13 @@ const Layout = ({ loggedIn, setLoggedIn }) => {
             {loggedIn ? (
 
               <>
+
                 <div className="sidebar-option">
-                  <Link to="/user-data">
-                    <button className="sidebar-option-button">{localStorage.getItem("username")}</button>
+                  <Link to="/user-account">
+                    <button className="sidebar-option-button">User Account</button>
                   </Link>
                 </div>
-
+                
                 <div className="sidebar-option">
                   <button className="sidebar-option-button" onClick={handleLogout}>
                     Logout

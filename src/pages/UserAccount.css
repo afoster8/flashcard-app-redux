@@ -1,0 +1,33 @@
+.update-button {
+    margin-left: 1%;
+    width: 32%;
+    margin-top: 0px;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    margin-left: 1%;
+    width: 32%;
+}
+
+.update-container {
+    margin-top: 0px;
+}
+
+.update-container-pin {
+    width: 76%;
+}
+
+input {
+    margin-bottom: 0px;
+}
+
+.update-container-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button {
+    margin-bottom: 10px;
+}

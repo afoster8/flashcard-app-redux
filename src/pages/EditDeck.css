@@ -1,0 +1,28 @@
+.delete-deck-container {
+    position: absolute;
+    right: 0px;
+    width: 50%;
+}
+
+.delete-deck {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    background-color: #e74c3c;
+}
+
+.assign-folder-container {
+    display: flex;
+    align-items: center;
+}
+
+.assign-folder-container select {
+    margin-left: 20px;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+.assign-folder-container h4 {
+    margin-bottom: 10px;
+    margin-top: 0px;
+}
