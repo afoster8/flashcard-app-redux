@@ -1,33 +1,33 @@
 input {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 button {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .update-container {
-    margin-top: 0px;
+  margin-top: 0px;
 }
 
 .update-button {
-    margin-left: 1%;
-    width: 32%;
-    margin-top: 0px;
+  margin-left: 1%;
+  width: 32%;
+  margin-top: 0px;
 }
 
 .delete-button {
-    background-color: #e74c3c;
-    margin-left: 1%;
-    width: 32%;
+  background-color: #e74c3c;
+  margin-left: 1%;
+  width: 32%;
 }
 
 .update-container-pin {
-    width: 76%;
+  width: 76%;
 }
 
 .update-container-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

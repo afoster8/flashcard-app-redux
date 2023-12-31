@@ -1,16 +1,16 @@
 .title h1 {
-    width: 40%;
+  width: 40%;
 }
 
 .save-deck-container {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 40%;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 40%;
 }
 
 .save-button-top {
-    position: absolute;
-    top: 20px;
-    right: 0px;
+  position: absolute;
+  top: 20px;
+  right: 0px;
 }

@@ -26,17 +26,17 @@
   width: 100%;
   height: 60%;
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  position: relative; 
+  position: relative;
   padding: 2%;
 }
 
 .flashcard-front {
   font-size: 20px;
   font-weight: bold;
-  text-align: center; 
+  text-align: center;
 }
 
 .flashcard-content .flashcard-front {
@@ -49,7 +49,7 @@
 
 .flashcard-back {
   font-size: 20px;
-  text-align: center; 
+  text-align: center;
 }
 
 .flashcard-content .flashcard-back {
@@ -77,19 +77,19 @@ button:disabled {
 }
 
 .star-toggle {
-  position: absolute; 
-  top: 10px; 
-  right: 10px; 
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background-color: #707070;
   width: 25px;
   height: 25px;
   padding: 0px;
   text-align: center;
-  cursor: pointer; 
+  cursor: pointer;
   margin-right: 0px;
   margin-top: 0px;
 }
 
 .star-toggle:hover {
-  background-color: #909090; 
+  background-color: #909090;
 }
