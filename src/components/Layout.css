@@ -16,6 +16,32 @@ a {
     color: #e0e0e2;
 }
 
+.sidebar-title {
+    font-size: 24px;
+    width: 100%;
+}
+
+.sidebar-container-top {
+    position: absolute;
+    top: 0%;
+    width: 90%;
+    padding: 5%;
+}
+
+.sidebar-container-mid {
+    position: absolute;
+    top: 40%;
+    width: 90%;
+    padding: 5%;
+}
+
+.sidebar-container-bottom {
+    position: absolute;
+    bottom: 0;
+    width: 90%;
+    padding: 5%;
+}
+
 .sidebar-option-button {
     cursor: pointer;
     padding: 10px;
@@ -28,30 +54,4 @@ a {
 .sidebar-option-button:hover {
     background-color: #e74c3c;
     font-style: bold;
-}
-
-.sidebar-title {
-    font-size: 24px;
-    width: 100%;
-}
-
-.sidebar-container-mid {
-    position: absolute;
-    top: 40%;
-    width: 90%;
-    padding: 5%;
-}
-
-.sidebar-container-top {
-    position: absolute;
-    top: 0%;
-    width: 90%;
-    padding: 5%;
-}
-
-.sidebar-container-bottom {
-    position: absolute;
-    bottom: 0;
-    width: 90%;
-    padding: 5%;
 }

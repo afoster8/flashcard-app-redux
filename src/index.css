@@ -10,6 +10,11 @@ body {
   text-decoration: none;
 }
 
+.App {
+  background-color: #4a4a4b;
+  color: #e0e0e2;
+}
+
 textarea {
   width: 40%;
   padding: 10px;
@@ -29,20 +34,9 @@ input {
   margin-bottom: 10px;
 }
 
-.page {
-  position: absolute;
-  width: 60%;
-  left: 20%;
-}
-
 a {
   color: #e0e0e2;
   text-decoration: none;
-}
-
-.App {
-  background-color: #4a4a4b;
-  color: #e0e0e2;
 }
 
 button {
@@ -60,6 +54,22 @@ button {
 
 button:hover {
   background-color: #c0392b;
+}
+
+.page {
+  position: absolute;
+  width: 60%;
+  left: 20%;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title h1 {
+  width: 30%;
+  margin-bottom: 0px;
 }
 
 .name-input {
@@ -86,16 +96,6 @@ button:hover {
   padding: 5px 10px;
   cursor: pointer;
   width: 100%;
-}
-
-.title {
-  display: flex;
-  align-items: center;
-}
-
-.title h1 {
-  width: 30%;
-  margin-bottom: 0px;
 }
 
 .add-card-container {

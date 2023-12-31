@@ -3,11 +3,6 @@
     width: 32%;
 }
 
-.delete-button {
-    margin-left: 15px;
-    background-color: #e74c3c;
-}
-
 .folder-container {
     display: flex;
     flex-direction: column;
@@ -19,5 +14,10 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px; 
+}
+
+.delete-button {
+    margin-left: 15px;
+    background-color: #e74c3c;
 }
 

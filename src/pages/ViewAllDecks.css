@@ -3,6 +3,10 @@
     flex-direction: column;
 }
 
+a {
+    width: 100%;
+}
+
 .manage-folders-button-container {
     position: absolute;
     right: 0px;
@@ -42,29 +46,6 @@
     flex-wrap: wrap;
 }
 
-.selected {
-    background-color: #e74c3c;
-    color: #fff;
-}
-
-.deck-buttons {
-    width: 100%;
-}
-
-a {
-    width: 100%;
-}
-
-.deck-buttons-container {
-    display: flex;
-    width: 100%;
-}
-
-.flashcards-button {
-    width: 100%;
-    outline: none;
-}
-
 .deck-container {
     display: flex;
     flex-wrap: wrap;
@@ -92,6 +73,11 @@ a {
     white-space: normal;
 }
 
+.selected {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
 .deck-item.selected h3 {
     white-space: nowrap;
 }
@@ -105,14 +91,25 @@ a {
     width: 20%;
 }
 
+.deck-buttons-container {
+    display: flex;
+    width: 100%;
+}
+
+.deck-buttons {
+    width: 100%;
+}
+
+.flashcards-button {
+    min-height: 70px;
+    width: 100%;
+    outline: none;
+}
+
 .download-buttons-container {
     display: flex;
 }
 
 .download-buttons {
     width: 80%;
-}
-
-.flashcards-button {
-    min-height: 70px;
 }

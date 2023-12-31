@@ -12,14 +12,13 @@ const Folders = () => {
     /* Use Effect -- triggers on page load */
     useEffect(() => {
         setError("");
+
         /* Fetch Folders from auth.js*/
         const fetchFolders = async () => {
             try {
                 const response = await fetch(`http://localhost:3001/auth/get-folders`, {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                     credentials: "include",
                 });
 
@@ -27,11 +26,11 @@ const Folders = () => {
                     const data = await response.json();
                     setFolders(data);
                     console.log("Successful folder load");
-
                 } else {
-                    console.error("Error fetching folders");
+                    console.error("Bad response from server.");
                     setError("Error fetching folders");
                 }
+
             } catch (error) {
                 console.error("Error fetching folders", error);
                 setError("Error fetching folders");
@@ -42,7 +41,7 @@ const Folders = () => {
     }, []);
 
 
-    
+
 
     /* Page event functions */
 
@@ -56,8 +55,7 @@ const Folders = () => {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-
+                    },
                 body: JSON.stringify({ folders }),
                 credentials: "include",
             });
@@ -65,9 +63,8 @@ const Folders = () => {
             if (response.ok) {
                 console.log("Folders updated successfully");
                 setError("Successful update!"); // flag for informing user of successful import
-
             } else {
-                console.error("Some other type of error");
+                console.error("Bad response from server.");
                 setError("Error updating user");
             }
 

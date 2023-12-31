@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./UserAccount.css";
 
-const UserAccount = ({ loggedIn, setLoggedIn }) => {
+/* User Account page 
+    where the user can update their username, pin, or delete their account */
+const UserAccount = ({ setLoggedIn }) => {
     var oldUsername = localStorage.getItem("username");
     const navigate = useNavigate();
     const [verification, setVerification] = useState("");
@@ -11,20 +13,20 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
     const [newReenteredPin, setReenteredPin] = useState("");
     const [error, setError] = useState("");
 
+    /* Page event functions */
+
+    /* Triggers when we hit the delete account button. The appropriate string 
+        needs to be entered first to prevent tragic accidents. */
     const handleDeleteAccount = async () => {
         setError("");
 
         if (verification !== "delete " + oldUsername) {
             setError("Delete verification failed. Please enter correct string.")
-
         } else {
-
             try {
                 const response = await fetch("http://localhost:3001/auth/delete-account", {
                     method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                     credentials: "include",
                 });
 
@@ -35,38 +37,34 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
                     localStorage.removeItem("username");
                     setLoggedIn(false);
                     setError("");
-
                     navigate("/");
 
                 } else {
-                    console.error("bad request");
-                    console.error("Error deleting account");
+                    console.error("Bad request from server.");
                     setError("Error deleting account");
                 }
 
             } catch (error) {
-                console.error("Error deleting account", error);
+                console.error(error);
                 setError("Error deleting account");
             }
         }
     };
 
+    /* Triggers when we hit update username */
     const handleUpdateUsername = async () => {
         setError("");
 
         if (!newUsername || !oldUsername) {
             setError("Username cannot be empty.");
-
         } else {
-
             try {
                 const response = await fetch("http://localhost:3001/auth/update-username", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-
+                        },
                     body: JSON.stringify({ newUsername, oldUsername }),
                     credentials: "include",
                 });
@@ -75,9 +73,8 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
                     setError("Account updated!");
                     localStorage.setItem("username", newUsername);
                     setNewUsername("");
-
                 } else {
-                    console.error("Error updating username");
+                    console.error("Bad response from server.");
                     setError("Error updating username");
                 }
 
@@ -88,28 +85,25 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
         }
     };
 
+    /* Triggers when we hit update pin. Pin and re-enter pin need to match. */
     const handleUpdatePin = async () => {
         setError("");
 
         if (!newPin || !newReenteredPin) {
             setError("Please fill out all PIN fields.");
-
         } else if (newPin !== newReenteredPin) {
             setError("New PINs do not match.");
-
         } else {
-
             try {
                 const response = await fetch("http://localhost:3001/auth/update-pin", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-
+                        },
                     body: JSON.stringify({ newPin }),
                     credentials: "include",
-                });
+                    });
 
                 if (response.ok) {
                     console.log("PIN updated successfully");
@@ -118,7 +112,7 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
                     setReenteredPin("");
 
                 } else {
-                    console.error("Error updating PIN");
+                    console.error("Bad response from server");
                     setError("Error updating PIN");
                 }
 
@@ -129,6 +123,7 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
         }
     };
 
+    /* Populate the page. */
     return (
         <div className="page">
             <h1>User Account</h1>
@@ -159,7 +154,6 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
                 </div>
 
                 <div className="update-container-container">
-
                     <input
                         type="password"
                         placeholder="New Pin"
@@ -180,7 +174,6 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
 
                     <button className="update-button" onClick={handleUpdatePin}>Update Pin</button>
                 </div>
-
             </div>
 
             <br /><br />
@@ -190,10 +183,11 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
                     <h2>Delete Account</h2>
                 </div>
 
-                <p> This is irreversible! Type "delete " + your username to confirm (example: delete this-old-account ). </p>
+                <p> This is irreversible! Type "delete " + your username to confirm (example: delete 
+                    this-old-account ). </p>
                 <p> Remember to download all your decks before you go!</p>
-                <p> If you use the TSV download option, cards are separated by five new-lines (\n\n\n\n\n) and
-                    front/back is separated by a tab (\t). </p>
+                <p> If you use the TSV download option, cards are separated by five new-lines (\n\n\n\n\n) 
+                    and front/back is separated by a tab (\t). </p>
 
                 <input
                     type="text"
@@ -203,7 +197,6 @@ const UserAccount = ({ loggedIn, setLoggedIn }) => {
                 />
                 <button className="delete-button" onClick={handleDeleteAccount}>Delete Account</button>
             </div>
-
         </div>
     );
 };

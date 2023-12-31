@@ -26,9 +26,9 @@ export const downloadJson = (deck) => {
 /* download in TSV form -- good for quizlet */
 /* Note that cards are separated by \n\n\n\n\n and front/back is separated by \t. */
 export const downloadTxt = (deck) => {
-
-    if (!deck) {
-        return;
+    if (!deck) { 
+        console.error("Deck is not downloadable");
+        return; 
     }
 
     /* boilerplate */
@@ -40,6 +40,6 @@ export const downloadTxt = (deck) => {
     link.click();
 }
 
-const downloadUtils = {downloadJson, downloadTxt};
+const downloadUtils = { downloadJson, downloadTxt };
 
 export default downloadUtils;

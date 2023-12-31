@@ -10,6 +10,8 @@ const CreateNewDeck = () => {
     const [cards, setCards] = useState([{ front: "", back: "", starred: false }]);
     const [error, setError] = useState(""); // flag for successful import or some other error
 
+    /* Use Effect -- triggers on page load & state update
+    Fetch user's folders  */
     useEffect(() => {
         setError("");
 
@@ -18,26 +20,28 @@ const CreateNewDeck = () => {
             try {
                 const response = await fetch("http://localhost:3001/auth/get-folders", {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                     credentials: "include",
-                });
+                    });
 
                 if (response.ok) {
                     const data = await response.json();
                     setFolders(data);
                 } else {
+                    console.log("Bad response from server.");
                     setError("Error fetching folders");
                 }
             } catch (error) {
+                console.error(error);
                 setError("Error fetching folders");
             }
         };
 
         fetchFolders();
-
     }, []);
+
+
+    /* Page event functions */
 
     /* Happens upon hitting the save button */
     /* POSTS your new deck to your user account deck field */
@@ -56,7 +60,7 @@ const CreateNewDeck = () => {
             front: card.front.trim() === "" ? "..." : card.front,
             back: card.back.trim() === "" ? "..." : card.back,
             starred: card.starred,
-        }));
+            }));
 
         if (sanitizedCards.length === 0) {
             setError("You must have at least one card.");
@@ -71,13 +75,12 @@ const CreateNewDeck = () => {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-
+                },
             body: JSON.stringify({
                 deckName,
                 cards: sanitizedCards,
                 folderArray // create-deck will make name + cards into a deck
-            }),
+                }),
 
             credentials: "include",
         });
@@ -95,15 +98,12 @@ const CreateNewDeck = () => {
         }
     };
 
-
-    /* Page event functions */
-
     /* Keep track of folder assignment */
     const handleAssignToFolder = (e) => {
         setSelectedFolder(e);
     }
 
-    /* Trigged when we hit add card, generates another field for user input */
+    /* Triggered when we hit add card, generates another field for user input */
     const handleAddCard = () => {
         setCards([...cards, { front: "", back: "", starred: false }]);
     };

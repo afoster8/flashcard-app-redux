@@ -6,6 +6,10 @@
   height: 100vh;
 }
 
+.counter {
+  padding: 10px;
+}
+
 .flashcard-container {
   display: flex;
   flex-direction: column;
@@ -29,18 +33,9 @@
   padding: 2%;
 }
 
-.counter {
-  padding: 10px;
-}
-
 .flashcard-front {
   font-size: 20px;
   font-weight: bold;
-  text-align: center; 
-}
-
-.flashcard-back {
-  font-size: 20px;
   text-align: center; 
 }
 
@@ -48,11 +43,16 @@
   display: block;
 }
 
-.flashcard-content .flashcard-back {
+.flashcard-content.show-back .flashcard-front {
   display: none;
 }
 
-.flashcard-content.show-back .flashcard-front {
+.flashcard-back {
+  font-size: 20px;
+  text-align: center; 
+}
+
+.flashcard-content .flashcard-back {
   display: none;
 }
 
@@ -71,6 +71,11 @@
   min-width: 50%;
 }
 
+button:disabled {
+  background-color: #9e9d9d;
+  cursor: not-allowed;
+}
+
 .star-toggle {
   position: absolute; 
   top: 10px; 
@@ -87,9 +92,4 @@
 
 .star-toggle:hover {
   background-color: #909090; 
-}
-
-button:disabled {
-  background-color: #9e9d9d;
-  cursor: not-allowed;
 }

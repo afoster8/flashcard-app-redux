@@ -1,11 +1,11 @@
+.title h1 {
+    width: 40%;
+}
+
 .save-deck-container {
     position: absolute;
     top: 0px;
     right: 0px;
-    width: 40%;
-}
-
-.title h1 {
     width: 40%;
 }
 

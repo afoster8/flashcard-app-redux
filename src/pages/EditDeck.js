@@ -17,16 +17,14 @@ const EditDeck = () => {
     useEffect(() => {
         setError("");
 
-        /* Fetch Deck from auth.js*/
+        /* Fetch deck from user's deck field */
         const fetchDeck = async () => {
             try {
                 const response = await fetch(`http://localhost:3001/auth/get-deck/${id}`, {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                     credentials: "include",
-                });
+                    });
 
                 if (response.ok) {
                     const data = await response.json();
@@ -34,7 +32,7 @@ const EditDeck = () => {
                     console.log("Successful deck load");
 
                 } else {
-                    console.error("Error fetching deck");
+                    console.error("Bad response from server.");
                     setError("Error fetching deck");
                 }
             } catch (error) {
@@ -48,11 +46,9 @@ const EditDeck = () => {
             try {
                 const response = await fetch("http://localhost:3001/auth/get-folders", {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                     credentials: "include",
-                });
+                    });
 
                 if (response.ok) {
                     const data = await response.json();
@@ -83,7 +79,8 @@ const EditDeck = () => {
 
     /* Page event functions */
 
-    /* Event when you hit save -- PUTS a new deck in your user account where the old one used to be */
+    /* Triggers when we hit save
+     PUTS a new deck in your user account where the old one used to be */
     const handleSaveDeck = async () => {
         setError("");
 
@@ -93,16 +90,14 @@ const EditDeck = () => {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-
+                    },
                 body: JSON.stringify(deck), // sends the whole deck, including the ID
                 credentials: "include",
-            });
+                });
 
             if (response.ok) {
                 console.log("Deck updated successfully");
                 setError("Successful edit!"); // flag for informing user of successful import
-
             } else {
                 console.error("Some other type of error");
                 setError("Error updating deck. Check if there are empty fields. ");
@@ -114,45 +109,44 @@ const EditDeck = () => {
         }
     };
 
-    /* DELETE deck from user's deck field */
+    /* Triggers when we hit delete deck. DELETE deck from user's deck field */
     const handleDeleteDeck = async () => {
         setError("");
 
         try {
             const response = await fetch(`http://localhost:3001/auth/delete-deck/${id}`, {
                 method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                 credentials: "include",
-            });
+                });
 
             if (response.ok) {
                 console.log("Deck deleted successfully");
                 navigate("/view-all-decks");
-
             } else {
                 console.error("Error deleting deck");
                 setError("Error deleting deck. ");
             }
+
         } catch (error) {
             console.error("Error deleting deck", error);
             setError("Error deleting deck. ");
         }
     };
 
-    /* Initiates a new card for user input */
+    /* Triggers when we hit the add card button 
+        Initiates a new card for user input, updates deck state */
     const handleAddCard = () => {
         setError("");
 
         setDeck({
             ...deck,
             cards: [...deck.cards, { front: "", back: "", starred: false }],
-        })
+            })
     };
 
-    /* Assigns the deck to a folder */
+    /* Triggers when we select a folder from the dropdown
+        Updates deck state to be the selected folder */
     const handleAssignToFolder = (folderName) => {
         setError("");
         setDeck({ ...deck, folder: [folderName] });
@@ -169,13 +163,10 @@ const EditDeck = () => {
 
             if (event.target.id === "name-input") {
                 document.getElementById("front-0").focus();
-
             } else if (event.target.id === `back-${index}` && index === deck.cards.length - 1) {
                 handleAddCard();
-
             } else if (event.target.id === `front-${index}`) {
                 document.getElementById(`back-${index}`).focus();
-
             } else {
                 document.getElementById(`front-${index + 1}`).focus();
             }
@@ -211,7 +202,6 @@ const EditDeck = () => {
                 {error && <p className="error-message">{error}</p>}
 
                 <div className="new-deck-content">
-
                     <div className="deck-name">
                         <input
                             className="name-input"
@@ -226,7 +216,6 @@ const EditDeck = () => {
                     </div>
 
                     <div className="card-container">
-
                         {deck.cards.map((card, index) => (
                             <div className="question-answer" key={index}>
                                 <div className="question-answer-group">

@@ -11,6 +11,8 @@ const ImportDeck = () => {
     const [tsvContent, setTsvContent] = useState("");
     const [error, setError] = useState(""); // flag for showing errors
 
+    /* Use Effect -- triggers on page load & state update
+    Fetch folders from user folder field. */
     useEffect(() => {
         setError("");
 
@@ -19,9 +21,7 @@ const ImportDeck = () => {
             try {
                 const response = await fetch("http://localhost:3001/auth/get-folders", {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                     credentials: "include",
                 });
 
@@ -29,9 +29,11 @@ const ImportDeck = () => {
                     const data = await response.json();
                     setFolders(data);
                 } else {
+                    console.log("Bad response from server.");
                     setError("Error fetching folders");
                 }
             } catch (error) {
+                console.error(error);
                 setError("Error fetching folders");
             }
         };
@@ -39,6 +41,9 @@ const ImportDeck = () => {
         fetchFolders();
 
     }, []);
+
+
+
 
     /* Page event functions */
 
@@ -106,7 +111,7 @@ const ImportDeck = () => {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                        },
                     body: JSON.stringify({
                         deckName,
                         cards,
@@ -143,12 +148,13 @@ const ImportDeck = () => {
                 <h1>Import a New Deck</h1>
 
                 <p>Import a tab-separated deck by pasting it into this field.</p>
-                <p>Make sure your cards are separated by five line breaks (\n\n\n\n\n) and front/back is separated by a tab! (\t) If you are importing from Quizlet, enter \n\n\n\n\n into the
+                <p>Make sure your cards are separated by five line breaks (\n\n\n\n\n) and front/back is
+                    separated by a tab! (\t) If you are importing from Quizlet, enter \n\n\n\n\n into the
                     between rows field, and choose tab for the between term and definition field.
                 </p>
-                <p>If you get an import error, it's possible that you have cards with empty fronts, backs, or cards that are entirely empty. Fix these errors before importing. </p>
+                <p>If you get an import error, it's possible that you have cards with empty fronts, backs, or
+                    cards that are entirely empty. Fix these errors before importing. </p>
                 <br />
-                
 
                 <div className="assign-folder-container">
                     <h4>Assign to Folder: </h4>

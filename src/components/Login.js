@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
     Use this page to get a token that keeps you logged in. 
     Propogates your login status back to index.js */
 const Login = ({ onLogin }) => {
-
     const [username, setUsername] = useState("");
     const [pin, setPin] = useState("");
     const [error, setError] = useState(""); // flag to show errors to user
@@ -28,7 +27,7 @@ const Login = ({ onLogin }) => {
             const response = await axios.post("http://localhost:3001/auth/login", {
                 username,
                 pin,
-            });
+                });
 
             /* if there's a response, send it back to index.js */
             const { token } = response.data;
@@ -38,16 +37,14 @@ const Login = ({ onLogin }) => {
             localStorage.setItem("token", token);
             localStorage.setItem("username", username);
 
-            /* and go home! */
+            /* and go back home! */
             navigate("/");
-
             console.log("Login success!");
 
         } catch (error) {
-
             if (error.response.data) {
+                console.error(error);
                 setError(error.response.data.error);
-
             } else {
                 console.error(error);
                 setError("An error occurred. Please try again.");
@@ -71,9 +68,7 @@ const Login = ({ onLogin }) => {
     return (
         <div className="page">
             <div className="login">
-
                 <h1>Login</h1>
-
                 {error && <p className="error-message">{error}</p>}
 
                 <div className="user-info">
@@ -108,7 +103,6 @@ const Login = ({ onLogin }) => {
                         Login
                     </button>
                 </div>
-
             </div>
         </div>
     );

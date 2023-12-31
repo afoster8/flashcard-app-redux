@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import "./Flashcards.css";
 
 /* Flashcards page
-   This is where the magic happens. */
+   This is where the magic happens. 
+   Accessed through the View All Decks page, associated with one deck in particular. */
 const Flashcards = () => {
     const { id } = useParams();
     const [deck, setDeck] = useState(null);
@@ -11,7 +12,8 @@ const Flashcards = () => {
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
     const [showBack, setShowBack] = useState(false);
 
-    /* Use Effect -- triggers on page load */
+    /* Use Effect -- triggers on page load & state update
+        Fetch associated deck to iterate through flashcards. */
     useEffect(() => {
         setError("");
 
@@ -20,11 +22,9 @@ const Flashcards = () => {
             try {
                 const response = await fetch(`http://localhost:3001/auth/get-deck/${id}`, {
                     method: "GET",
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                     credentials: "include",
-                });
+                    });
 
                 if (response.ok) {
                     const data = await response.json();
@@ -44,7 +44,6 @@ const Flashcards = () => {
         };
 
         fetchDeck();
-
     }, [id]);
 
 
@@ -61,22 +60,20 @@ const Flashcards = () => {
         e.stopPropagation(); // so we don't flip the card
 
         try {
+            /* save the current card information and feed */
             const cardId = deck.cards[currentCardIndex]._id;
             const deckId = deck.id; 
-            const user = localStorage.getItem("username"); 
             const starred = deck.cards[currentCardIndex].starred;
-            const front = deck.cards[currentCardIndex].front;
-            const back = deck.cards[currentCardIndex].back;
 
             const response = await fetch(`http://localhost:3001/auth/update-card/${deckId}/${cardId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+                    },
                 credentials: "include",
-                body: JSON.stringify({ user, deckId, cardId, starred: !starred, front, back }),
-            });
+                body: JSON.stringify({ starred: !starred }),
+                });
 
             /* update our local state variable with the new deck */
             if (response.ok) {
@@ -97,6 +94,7 @@ const Flashcards = () => {
                 console.error("Error updating card");
                 setError("Something went wrong.");
             }
+
         } catch (error) {
             console.error("Error updating card", error);
             setError("Something went wrong");
@@ -156,7 +154,6 @@ const Flashcards = () => {
             {deck && (
                 <div className="flashcard-game">
                     <div className="flashcard-container">
-
                         <div className='counter'>
                             {currentCardIndex + 1} / {deck.cards.length}
                         </div>
@@ -170,7 +167,6 @@ const Flashcards = () => {
 
                             <div className="flashcard-front">{deck.cards[currentCardIndex].front}</div>
                             <div className="flashcard-back">{deck.cards[currentCardIndex].back}</div>
-
                         </div>
 
                         <div className="flashcard-navigation">
@@ -188,7 +184,6 @@ const Flashcards = () => {
                             </button>
 
                         </div>
-
                     </div>
                 </div>
             )}
