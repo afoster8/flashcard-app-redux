@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 80vh;
 }
 
 .counter {
@@ -15,7 +15,7 @@
   flex-direction: column;
   align-items: center;
   width: 50%;
-  height: 50%;
+  height: 500px;
 }
 
 .flashcard-content {
@@ -24,19 +24,21 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   width: 100%;
-  height: 60%;
+  height: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 2%;
+  padding: 8%;
 }
+
 
 .flashcard-front {
   font-size: 20px;
   font-weight: bold;
   text-align: center;
+  overflow: auto;
 }
 
 .flashcard-content .flashcard-front {
@@ -50,6 +52,7 @@
 .flashcard-back {
   font-size: 20px;
   text-align: center;
+  overflow: auto;
 }
 
 .flashcard-content .flashcard-back {

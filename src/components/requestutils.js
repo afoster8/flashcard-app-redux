@@ -201,7 +201,7 @@ export const deleteDeck = async ({ id, setError }) => {
 /* Update a specific card (identified through deckID and card ID) to be starred 
   (i.e. marked as unknown) and return an error/success message */
 /* Used by Flashcards */
-export const toggleStarred = async ({ deck, deckId, cardId, starred, setDeck, setError }) => {
+export const toggleStarred = async ({ deck, currentDeck, deckId, cardId, starred, setDeck, setCurrentDeck, setError }) => {
   try {
     const response = await fetch(`http://localhost:3001/auth/update-card/${deckId}/${cardId}`, {
       method: "PATCH",
@@ -224,8 +224,21 @@ export const toggleStarred = async ({ deck, deckId, cardId, starred, setDeck, se
         }),
       };
 
+      const updatedCurrentDeck = {
+        ...currentDeck,
+        cards: currentDeck.cards.map((card) => {
+          if (card._id === cardId) {
+            return { ...card, starred: !card.starred };
+          }
+          return card;
+        }),
+      };
+
       setDeck(updatedDeck);
+      setCurrentDeck(updatedCurrentDeck);
       setError("");
+
+      console.log("Successfully (un)starred card");
 
     } else {
       console.error("Bad response from server");
