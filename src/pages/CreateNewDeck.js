@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { fetchFolders, createNewDeck } from "../components/requestutils";
 import "./CreateNewDeck.css";
 
 /* CreateNewDeck page, for adding a new deck to the user's deck field
    We get here through the Layout */
+
 const CreateNewDeck = () => {
   const [deckName, setDeckName] = useState("");
   const [folders, setFolders] = useState([]);
@@ -10,41 +12,14 @@ const CreateNewDeck = () => {
   const [cards, setCards] = useState([{ front: "", back: "", starred: false }]);
   const [error, setError] = useState(""); // flag for successful import or some other error
 
-  /* Use Effect -- triggers on page load & state update
-  Fetch user's folders  */
+  /* Use Effect -- triggers on page load & state update */
   useEffect(() => {
     setError("");
-
-    /* fetches the user folders */
-    const fetchFolders = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/auth/get-folders", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setFolders(data);
-        } else {
-          console.log("Bad response from server.");
-          setError("Error fetching folders");
-        }
-      } catch (error) {
-        console.error(error);
-        setError("Error fetching folders");
-      }
-    };
-
-    fetchFolders();
+    fetchFolders({ setFolders, setError });
   }, []);
 
-
-  /* Page event functions */
-
-  /* Happens upon hitting the save button */
-  /* POSTS your new deck to your user account deck field */
+  /* Triggered when we hit the save button 
+    POSTS your new deck to your user account deck field */
   const handleSaveDeck = async () => {
     setError("");
 
@@ -53,7 +28,21 @@ const CreateNewDeck = () => {
       return;
     }
 
-    /* Sanitize your cards -- must have a non-empty front and back */
+    var folderArray = [selectedFolder];
+    var sanitizedCards = sanitizeCards();
+
+    if (sanitizedCards.length === 0) {
+      setError("You must have at least one card.");
+      return;
+    }
+
+    createNewDeck({ deckName, cards: sanitizedCards, folderArray, setDeckName, setError });
+  };
+
+  /* Sanitize cards to remove any empty fronts or backs.
+    If the front or back is empty, just append (...). If the card is entirely empty, remove it 
+    entirely.*/
+  const sanitizeCards = () => {
     const nonEmptyCards = cards.filter(card => card.front.trim() !== '' || card.back.trim() !== '');
 
     const sanitizedCards = nonEmptyCards.map((card) => ({
@@ -62,43 +51,11 @@ const CreateNewDeck = () => {
       starred: card.starred,
     }));
 
-    if (sanitizedCards.length === 0) {
-      setError("You must have at least one card.");
-      return;
-    }
+    return sanitizedCards;
+  }
 
-    var folderArray = [selectedFolder];
-
-    /* POST the deck you just made to the db */
-    const response = await fetch("http://localhost:3001/auth/create-deck", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        deckName,
-        cards: sanitizedCards,
-        folderArray // create-deck will make name + cards into a deck
-      }),
-
-      credentials: "include",
-    });
-
-    /* If everything went well, empty page out and set success flag */
-    if (response.ok) {
-      console.log("Deck created successfully");
-      setError("Successful deck add!");
-      setDeckName("");
-      setCards([{ front: "", back: "", starred: false }]);
-
-    } else {
-      console.error("Error creating deck");
-      setError("Something went wrong");
-    }
-  };
-
-  /* Keep track of folder assignment */
+  /* Triggers when we change the selected folder from the dropdown 
+    Updates selected folder state variable for later deck update */
   const handleAssignToFolder = (e) => {
     setSelectedFolder(e);
   }
@@ -108,16 +65,16 @@ const CreateNewDeck = () => {
     setCards([...cards, { front: "", back: "", starred: false }]);
   };
 
-  /* Triggered when we move from card to card -- updates the current deck state variable 
-     with new input  */
+  /* Triggered when we move from card to card 
+    updates the current deck state variable with new input  */
   const handleCardChange = (index, field, value) => {
     const updatedCards = [...cards];
     updatedCards[index][field] = value;
     setCards(updatedCards);
   };
 
-  /* Triggered when we delete a card, updates the current deck state variable 
-     without the deleted card */
+  /* Triggered when we delete a card
+    updates the current deck state variable without the deleted card */
   const handleDeleteCard = (index) => {
     const updatedCards = [...cards];
     updatedCards.splice(index, 1);
@@ -125,7 +82,7 @@ const CreateNewDeck = () => {
   };
 
   /* move down the page as you hit enter 
-     you do have to hit enter twice when you just added a new card */
+    you do have to hit enter twice when you just added a new card */
   const handleKeyDown = (event, index) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { fetchFolders, createNewDeck } from "../components/requestutils";
 
 /* ImportDeck page 
-   POST a new deck in TSV format to the user's deck list 
-   Note that cards must be separated by \n\n\n and front/back must be separated by \t 
-   This makes it so cards can have \n in them. */
+  POST a new deck in TSV format to the user's deck list 
+  
+  Note that cards must be separated by \n\n\n and front/back must be separated by \t 
+  This makes it so cards can have \n in them. */
+
 const ImportDeck = () => {
   const [deckName, setDeckName] = useState("");
   const [folders, setFolders] = useState([]);
@@ -12,52 +15,26 @@ const ImportDeck = () => {
   const [error, setError] = useState(""); // flag for showing errors
 
   /* Use Effect -- triggers on page load & state update
-  Fetch folders from user folder field. */
+    Fetch folders from user folder field. */
   useEffect(() => {
     setError("");
-
-    /* fetches the user folders */
-    const fetchFolders = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/auth/get-folders", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setFolders(data);
-        } else {
-          console.log("Bad response from server.");
-          setError("Error fetching folders");
-        }
-      } catch (error) {
-        console.error(error);
-        setError("Error fetching folders");
-      }
-    };
-
-    fetchFolders();
-
+    fetchFolders({ setFolders, setError });
   }, []);
 
-
-
-
-  /* Page event functions */
-
-  /* Keep track of folder assignment */
+  /* Triggered when we change the folder assignment in the dropdown
+    Keep track of folder assignment */
   const handleAssignToFolder = (e) => {
     setSelectedFolder(e);
   }
 
-  /* Keep track of deck name changes and update state variable appropriately */
+  /* Triggered when we enter input in deck name field
+    Keep track of deck name changes and update state variable appropriately */
   const handleDeckNameChange = (e) => {
     setDeckName(e.target.value);
   };
 
-  /* Keep track of TSV changes and update state variable appropriately */
+  /* Triggered when we enter input in the TSV field  
+    Keep track of TSV changes and update state variable appropriately */
   const handleTsvContentChange = (e) => {
     setTsvContent(e.target.value);
   };
@@ -76,8 +53,8 @@ const ImportDeck = () => {
     }
   };
 
-
-  /* Parse the input and POST deck to user account deck list */
+  /* Triggered when we hit the import button. 
+    Attempts to parse input, then fire a request to POST to the user deck field.  */
   const handleImport = async () => {
     setError(""); // set error to empty
 
@@ -86,60 +63,26 @@ const ImportDeck = () => {
       return;
     }
 
-    /* First try to parse the input */
-    try {
-      /* split cards by \n and front/back by \t */
-      const cards = tsvContent.split("\n\n\n\n\n").map((line) => {
-        const [front, back] = line.split("\t");
+    var cards = parseInput();
 
-        /* if there's some parsing error, let them know */
-        if (!front || !back) {
-          setError("Parsing error in tab-separated list. Please check your input.");
-        }
-
-        return { front, back, starred: false };
-      });
-
-      /* workaround catch for a parse error because no return in a map */
-      if (error !== "Parsing error in tab-separated list. Please check your input.") {
-
-        var folderArray = [selectedFolder];
-
-        /* POST cards to user account deck list */
-        const response = await fetch("http://localhost:3001/auth/create-deck", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
-            deckName,
-            cards,
-            folderArray // together create-deck will make a deck
-          }),
-
-          credentials: "include",
-        });
-
-        /* If everything went well, reset all fields and populate success flag */
-        if (response.ok) {
-          console.log("Deck imported successfully");
-          setError("Successful import!");
-          setDeckName("");
-          setTsvContent("");
-
-        } else {
-          console.error("Error importing deck");
-          setError("Something went wrong");
-        }
-      }
-
-    } catch (error) {
-      console.error("Error parsing or importing deck", error);
-      setError("Something went wrong");
+    if (cards) {
+      var folderArray = [selectedFolder];
+      createNewDeck({ deckName, cards, folderArray, setDeckName, setError });
+    } else {
+      setError("Error parsing deck. Try again.");
+      console.log("Error with parsing before server request is sent.")
     }
   };
 
+  /* Try to parse the input, based on the prescribed parsing method */
+  const parseInput = () => {
+    const parsedCards = tsvContent.split("\n\n\n\n\n").map((line) => {
+      const [front, back] = line.split("\t");
+      return { front, back, starred: false };
+    });
+
+    return parsedCards;
+  }
 
   /* Populate the page */
   return (

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { downloadJson, downloadTxt } from "../components/downloadutils";
+import { fetchFolders, fetchDecks } from "../components/requestutils";
 import "./ViewAllDecks.css";
-import { downloadJson, downloadTxt } from "../components/Download";
 
 /* ViewAllDecks Page
-   Shows all of the decks in the user's deck list
-   This is how you get to the Flashcards, edit deck, download deck pages */
-const ViewAllDecks = () => {
+  Shows all of the decks in the user's deck list
+  This is how you get to the flashcards, edit deck, download deck pages */
+
+const ViewAllDecks = ({ updatedUser, setUpdatedUser }) => {
   const [decks, setDecks] = useState([]);
   const [selectedDeck, setSelectedDeck] = useState();
   const [folders, setFolders] = useState([]);
@@ -17,67 +19,48 @@ const ViewAllDecks = () => {
     Fetch decks in the user's deck field and folders in the user's folder field */
   useEffect(() => {
     setError("");
-
-    /* Fetch decks from db */
-    const fetchDecks = async () => {
-
-      /* GET all of the decks from the user deck field */
-      try {
-        const response = await fetch("http://localhost:3001/auth/get-decks", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          credentials: "include",
-        });
-
-        /* If everything looks good, update our state variable appropriately */
-        if (response.ok) {
-          const data = await response.json();
-          setDecks(data.decks);
-          setError("");
-
-        } else {
-          console.error("Bad response from server.");
-          setError("Something went wrong");
-        }
-      } catch (error) {
-        console.error("Error fetching decks", error);
-        setError("Something went wrong");
-      }
-    };
-
-    /* fetches the user folders */
-    const fetchFolders = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/auth/get-folders", {
-          method: "GET",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setFolders(data);
-        } else {
-          console.error("Bad response from server.");
-          setError("Error fetching folders");
-        }
-
-      } catch (error) {
-        console.log(error);
-        setError("Error fetching folders");
-      }
-    };
-
-    fetchDecks();
-    fetchFolders();
-  }, []);
-
+    fetchFolders({ setFolders, setError });
+    fetchDecks({ setDecks, setError });
+    setUpdatedUser(false);
+  }, [updatedUser, setUpdatedUser]);
 
   /* if the deck hasn't loaded from UseEffect yet, we're still loading*/
   if (!decks) {
     return <p>Loading decks...</p>;
   }
 
+  /* Triggers when user clicks on a deck 
+    Marks that deck as selected. Used for conditional CSS element display
+    of flashcard, edit deck, and download buttons for navigation
+    to deck pages */
+  const handleDeckClick = (deck) => {
+    const deckElement = document.getElementById(`deck-${deck.id}`);
+
+    /* toggle off selection if it is already selected*/
+    if (selectedDeck) {
+      const selectedDeckElement = document.getElementById(`deck-${selectedDeck.id}`);
+      selectedDeckElement.classList.remove('selected');
+    }
+
+    /* otherwise mark as selected */
+    setSelectedDeck(selectedDeck === deck ? null : deck);
+    deckElement.classList.toggle('selected');
+  };
+
+  /* download as either json or TSV 
+    note that TSVs are in the same format as the import requires
+    (i.e. \n\n\n between cards and \t between front,back)
+    this allows for line breaks in cards */
+  const handleDownload = (e, choice) => {
+    e.stopPropagation();
+    choice === "json" ? downloadJson(selectedDeck) : downloadTxt(selectedDeck);
+  }
+
+  /* selects the folder that was most recently clicked on, assigns it to state var */
+  const handleFolderClick = (folderName) => {
+    setSelectedFolder(folderName);
+    setSelectedDeck(null);
+  };
 
   /* Main logic of the page -- shows decks based on folder filtering logic 
   or all decks, depending on user choice. Edit/download/start flashcards only shows 
@@ -133,44 +116,6 @@ const ViewAllDecks = () => {
         ))}
       </div>
     );
-  };
-
-
-
-  /* Page event functions */
-
-  /* Triggers when user clicks on a deck 
-     Marks that deck as selected. Used for conditional CSS element display
-     of flashcard, edit deck, and download buttons for navigation
-     to deck pages */
-  const handleDeckClick = (deck) => {
-    const deckElement = document.getElementById(`deck-${deck.id}`);
-
-    /* toggle off selection if it is already selected*/
-    if (selectedDeck) {
-      const selectedDeckElement = document.getElementById(`deck-${selectedDeck.id}`);
-      selectedDeckElement.classList.remove('selected');
-    }
-
-    /* otherwise mark as selected */
-    setSelectedDeck(selectedDeck === deck ? null : deck);
-    deckElement.classList.toggle('selected');
-  };
-
-
-  /* download as either json or TSV 
-      note that TSVs are in the same format as the import requires
-      (i.e. \n\n\n between cards and \t between front,back)
-      this allows for line breaks in cards */
-  const handleDownload = (e, choice) => {
-    e.stopPropagation();
-    choice === "json" ? downloadJson(selectedDeck) : downloadTxt(selectedDeck);
-  }
-
-  /* selects the folder that was most recently clicked on, assigns it to state var */
-  const handleFolderClick = (folderName) => {
-    setSelectedFolder(folderName);
-    setSelectedDeck(null);
   };
 
   /* Populate the page */

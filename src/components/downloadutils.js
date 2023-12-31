@@ -41,5 +41,4 @@ export const downloadTxt = (deck) => {
 }
 
 const downloadUtils = { downloadJson, downloadTxt };
-
 export default downloadUtils;

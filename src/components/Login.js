@@ -3,8 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 /* Login page 
-    Use this page to get a token that keeps you logged in. 
-    Propogates your login status back to index.js */
+  Use this page to get a token that keeps you logged in. 
+  Propogates your login status back to index.js */
+
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [pin, setPin] = useState("");
@@ -12,8 +13,8 @@ const Login = ({ onLogin }) => {
   const navigate = useNavigate();
 
   /* Triggers upon hitting login button. 
-      Main logic of the page -- keeps track of the username and pin you entered
-      and queries the db to see if there's a match */
+    Main logic of the page -- keeps track of the username and pin you entered
+    and queries the db to see if there's a match */
   const handleLogin = async () => {
     setError("");
 
@@ -65,6 +66,7 @@ const Login = ({ onLogin }) => {
     }
   };
 
+  /* Populate the page */
   return (
     <div className="page">
       <div className="login">

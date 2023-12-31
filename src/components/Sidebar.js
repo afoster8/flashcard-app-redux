@@ -1,10 +1,11 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import "./Layout.css";
+import "./Sidebar.css";
 
 /* Sidebar/Layout -- stays on the side at all times 
     Uses props to find out whether we're logged in or not */
-const Layout = ({ loggedIn, setLoggedIn }) => {
+
+const Sidebar = ({ loggedIn, setLoggedIn }) => {
   const navigate = useNavigate();
 
   /* UseEffect to look for the token (and thus populate appropriate sidebar items!) */
@@ -25,6 +26,7 @@ const Layout = ({ loggedIn, setLoggedIn }) => {
   };
 
   /* Populate sidebar 
+  
       Remember that we only want to show ViewAllDecks, CreateNewDeck, ImportDeck, and Logout 
       if we're logged in and we only want to show Login and Register if we are *not* logged in! */
   return (
@@ -102,4 +104,4 @@ const Layout = ({ loggedIn, setLoggedIn }) => {
   );
 };
 
-export default Layout;
+export default Sidebar;

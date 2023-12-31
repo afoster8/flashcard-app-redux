@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { deleteAccount, updateUsername, updatePin } from "../components/requestutils";
 import "./UserAccount.css";
 
 /* User Account page 
-    where the user can update their username, pin, or delete their account */
+  Where the user can update their username, pin, or delete their account */
+
 const UserAccount = ({ setLoggedIn }) => {
   var oldUsername = localStorage.getItem("username");
   const navigate = useNavigate();
@@ -13,114 +15,24 @@ const UserAccount = ({ setLoggedIn }) => {
   const [newReenteredPin, setReenteredPin] = useState("");
   const [error, setError] = useState("");
 
-  /* Page event functions */
-
-  /* Triggers when we hit the delete account button. The appropriate string 
+  /* Triggered when we hit the delete account button. The appropriate string 
       needs to be entered first to prevent tragic accidents. */
   const handleDeleteAccount = async () => {
     setError("");
-
-    if (verification !== "delete " + oldUsername) {
-      setError("Delete verification failed. Please enter correct string.")
-    } else {
-      try {
-        const response = await fetch("http://localhost:3001/auth/delete-account", {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          console.log("Account deleted successfully");
-
-          localStorage.removeItem("token");
-          localStorage.removeItem("username");
-          setLoggedIn(false);
-          setError("");
-          navigate("/");
-
-        } else {
-          console.error("Bad request from server.");
-          setError("Error deleting account");
-        }
-
-      } catch (error) {
-        console.error(error);
-        setError("Error deleting account");
-      }
-    }
+    deleteAccount({ setLoggedIn, setError });
+    navigate("/");
   };
 
-  /* Triggers when we hit update username */
+  /* Triggered when we hit update username */
   const handleUpdateUsername = async () => {
     setError("");
-
-    if (!newUsername || !oldUsername) {
-      setError("Username cannot be empty.");
-    } else {
-      try {
-        const response = await fetch("http://localhost:3001/auth/update-username", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ newUsername, oldUsername }),
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          setError("Account updated!");
-          localStorage.setItem("username", newUsername);
-          setNewUsername("");
-        } else {
-          console.error("Bad response from server.");
-          setError("Error updating username");
-        }
-
-      } catch (error) {
-        console.error("Error updating username", error);
-        setError("Error updating username");
-      }
-    }
+    updateUsername({ newUsername, setNewUsername, setError });
   };
 
-  /* Triggers when we hit update pin. Pin and re-enter pin need to match. */
+  /* Triggered when we hit update pin. Pin and re-enter pin need to match. */
   const handleUpdatePin = async () => {
     setError("");
-
-    if (!newPin || !newReenteredPin) {
-      setError("Please fill out all PIN fields.");
-    } else if (newPin !== newReenteredPin) {
-      setError("New PINs do not match.");
-    } else {
-      try {
-        const response = await fetch("http://localhost:3001/auth/update-pin", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ newPin }),
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          console.log("PIN updated successfully");
-          setError("Account updated!");
-          setNewPin("");
-          setReenteredPin("");
-
-        } else {
-          console.error("Bad response from server");
-          setError("Error updating PIN");
-        }
-
-      } catch (error) {
-        console.error("Error updating PIN", error);
-        setError("Error updating PIN");
-      }
-    }
+    updatePin({ newPin, setNewPin, setReenteredPin, setError });
   };
 
   /* Populate the page. */

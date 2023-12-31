@@ -2,7 +2,8 @@ import ReactDOM from "react-dom/client";
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Layout from "./components/Layout";
+/* component imports */
+import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import ViewAllDecks from "./pages/ViewAllDecks";
 import CreateNewDeck from "./pages/CreateNewDeck";
@@ -19,7 +20,10 @@ import "./index.css";
 /* it all starts from here */
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false); // flag to send to Layout & UserAccount
+  // flag to send to elements that require state update depending on logged-in status
+  const [loggedIn, setLoggedIn] = useState(false);
+  // flag to send to elements that are navigated to, to show user state change (like deck elements)
+  const [updatedUser, setUpdatedUser] = useState(false);
 
   const handleLogin = () => {
     console.log("Logging in...");
@@ -29,15 +33,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={<Layout loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}
-        >
-
+        <Route path="/" element={<Sidebar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />}>
           <Route index element={<Home loggedIn={loggedIn} />} />
-          <Route path="view-all-decks" element={<ViewAllDecks />} />
+          <Route path="view-all-decks" element={<ViewAllDecks updatedUser={updatedUser} setUpdatedUser={setUpdatedUser} />} />
           <Route path="folders" element={<Folders />} />
-          <Route path="edit-deck/:id" element={<EditDeck />} />
+          <Route path="edit-deck/:id" element={<EditDeck setUpdatedUser={setUpdatedUser} />} />
           <Route path="start-flashcards/:id" element={<Flashcards />} />
           <Route path="create-new-deck" element={<CreateNewDeck />} />
           <Route path="import-deck" element={<ImportDeck />} />
