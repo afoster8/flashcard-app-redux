@@ -113,7 +113,7 @@ const CreateNewDeck = () => {
         <p> Create a new flashcard deck from scratch. </p>
         <p> Cards that lack a front or back will have a (...)
           added to the missing field, and cards that are entirely empty will be deleted. </p>
-        <p>Use Shift+Enter to go to next line within a card field. </p>
+        <p>Use Shift+Enter to go to next line within a card field. <strong>Be careful not to add more than 4 new lines!</strong> </p>
 
         <br />
 
