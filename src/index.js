@@ -43,7 +43,7 @@ export default function App() {
           <Route path="import-deck" element={<ImportDeck />} />
           <Route path="login" element={<Login onLogin={handleLogin} />} />
           <Route path="register" element={<Register />} />
-          <Route path="user-account" element={<UserAccount loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route path="user-account" element={<UserAccount setLoggedIn={setLoggedIn} />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>
