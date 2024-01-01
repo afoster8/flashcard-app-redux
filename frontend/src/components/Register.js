@@ -34,7 +34,7 @@ const Register = () => {
         return;
       }
 
-      await axios.post("https://intense-atoll-92670/auth/register", {
+      await axios.post("https://intense-atoll-92670.herokuapp.com/auth/login", {
         username,
         pin,
       });
