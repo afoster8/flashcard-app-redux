@@ -34,7 +34,7 @@ const Register = () => {
         return;
       }
 
-      await axios.post("http://localhost:3001/auth/register", {
+      await axios.post("http://intense-atoll-92670-862e0116edf6/auth/register", {
         username,
         pin,
       });
