@@ -9,7 +9,7 @@ const cors = require("cors");
 const port = process.env.PORT || 3001;
 
 const corsOptions = {
-  origin: "https://intense-atoll-92670.herokuapp.com",
+  origin: "https://flashcard-app-afoster8.herokuapp.com",
   credentials: true,
   optionSuccessStatus: 200,
   exposedHeaders: ["Authorization"],

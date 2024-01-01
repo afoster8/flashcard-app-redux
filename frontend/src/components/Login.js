@@ -25,7 +25,7 @@ const Login = ({ onLogin }) => {
       }
 
       /* query with your input */
-      const response = await axios.post("https://intense-atoll-92670-862e0116edf6.herokuapp.com/auth/login", {
+      const response = await axios.post("https://flashcard-app-afoster8-b01d501d6331.herokuapp.com/auth/login", {
         username,
         pin,
       });
