@@ -25,7 +25,7 @@ const Login = ({ onLogin }) => {
       }
 
       /* query with your input */
-      const response = await axios.post("https://intense-atoll-92670-862e0116edf6/auth/login", {
+      const response = await axios.post("https://intense-atoll-92670/auth/login", {
         username,
         pin,
       });
