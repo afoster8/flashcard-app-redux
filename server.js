@@ -19,10 +19,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/auth", authRoutes);
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGODB_URI);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
