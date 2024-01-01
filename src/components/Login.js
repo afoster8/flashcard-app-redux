@@ -43,13 +43,8 @@ const Login = ({ onLogin }) => {
       console.log("Login success!");
 
     } catch (error) {
-      if (error.response.data) {
-        console.error(error);
-        setError(error.response.data.error);
-      } else {
-        console.error(error);
-        setError("An error occurred. Please try again.");
-      }
+      console.error(error);
+      setError("An error occurred. Please try again.");
     }
   };
 
