@@ -37,6 +37,7 @@ const CreateNewDeck = () => {
     }
 
     createNewDeck({ deckName, cards: sanitizedCards, folderArray, setDeckName, setError });
+    setCards([{ front: "", back: "", starred: false }]);
   };
 
   /* Sanitize cards to remove any empty fronts or backs.

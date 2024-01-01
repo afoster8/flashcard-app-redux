@@ -1,4 +1,4 @@
-﻿# flashcard-app-redux
+﻿# Flashcard App
 
-## medium time commitment
-- deployment, whatever that means
+## Is it done?????
+
