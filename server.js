@@ -1,43 +1,35 @@
-require("dotenv").config();
 const express = require("express");
+require("dotenv").config();
 const mongoose = require("mongoose");
-var bodyParser = require("body-parser");
-const cors = require("cors");
-const authRoutes = require("./routes/auth");
 const app = express();
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+const authRoutes = require("./routes/auth");
+const port = process.env.PORT || 3001;
+const path = require("path");
+const cors = require("cors");
 
-var allowCrossDomain = function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  if ('OPTIONS' == req.method) {
-    res.send(200);
-  }
-  else {
-    next();
-  }
-};
-
-app.use(allowCrossDomain);
-app.use("/static", express.static("./public"));
+// Middleware
+app.use(cors());
 app.use(express.json());
+
+// Serve static files from the 'frontend/dist' directory
+app.use(express.static(path.join(__dirname, "frontend", "dist")));
+
+// Routes
 app.use("/auth", authRoutes);
 
-app.get("/", function(req, res) {
-  res.render("./frontend/src/index");
+// Handle all other routes by serving the main HTML file
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 });
 
-app.set("port", process.env.PORT || 3001);
+mongoose.connect(process.env.MONGODB_URI);
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/test');
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
-app.listen(app.get("port"), function () {
-  process.on('uncaughtException', function (err) {
-    console.log(err);
-  });
-  console.log("Express server listening on port %d in %s mode", app.get("port"), app.settings.env);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

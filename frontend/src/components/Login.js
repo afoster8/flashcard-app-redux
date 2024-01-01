@@ -43,8 +43,14 @@ const Login = ({ onLogin }) => {
       console.log("Login success!");
 
     } catch (error) {
-      console.error(error);
-      setError("An error occurred. Please try again.");
+      console.log(error);
+      if (error.response) {
+        setError("Incorrect username or password.");
+      } else if (error.request) {
+        setError("No response from the server.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
     }
   };
 

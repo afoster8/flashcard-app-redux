@@ -42,7 +42,21 @@ const Register = () => {
       navigate("/login");
 
     } catch (error) {
-      setError("An error occurred. Please try again.");
+      console.log(error);
+
+      if (error.response) {
+        if (error.response.status === 400) {
+          setError("Username already exists or invalid input.");
+        } else if (error.response.status === 500) {
+          setError("Internal server error. Please try again later.");
+        } else {
+          setError("An unexpected error occurred.");
+        }
+      } else if (error.request) {
+        setError("No response from the server.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
     }
   };
 
