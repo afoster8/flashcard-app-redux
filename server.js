@@ -1,23 +1,28 @@
-const express = require("express");
 require("dotenv").config();
-const mongoose = require("mongoose");
 const app = express();
+
+const express = require("express");
+const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
-const port = process.env.PORT || 3001;
 const path = require("path");
 const cors = require("cors");
 
-// Middleware
-app.use(cors());
+const port = process.env.PORT || 3001;
+
+const corsOptions = {
+  origin: "https://intense-atoll-92670.herokuapp.com",
+  credentials: true,
+  optionSuccessStatus: 200,
+  exposedHeaders: ["Authorization"],
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// Serve static files from the 'frontend/dist' directory
 app.use(express.static(path.join(__dirname, "frontend", "dist")));
 
-// Routes
 app.use("/auth", authRoutes);
 
-// Handle all other routes by serving the main HTML file
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 });
