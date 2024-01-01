@@ -1,29 +1,43 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+var bodyParser = require("body-parser");
 const cors = require("cors");
-const authRoutes = require("./models/auth");
+const authRoutes = require("./routes/auth");
 const app = express();
-const port = process.env.PORT || 3001;
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
-console.log("here");
+var allowCrossDomain = function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Credentials', true);
 
-const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-  optionSuccessStatus: 200,
-  exposedHeaders: ["Authorization"],
-}
+  if ('OPTIONS' == req.method) {
+    res.send(200);
+  }
+  else {
+    next();
+  }
+};
 
-
-app.options("/auth", cors(corsOptions));
-
-app.use(cors(corsOptions));
+app.use(allowCrossDomain);
+app.use("/static", express.static("./public"));
 app.use(express.json());
 app.use("/auth", authRoutes);
 
+app.get("/", function(req, res) {
+  res.render("index");
+});
+
+app.set("port", process.env.PORT || 3001);
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/test');
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(app.get("port"), function () {
+  process.on('uncaughtException', function (err) {
+    console.log(err);
+  });
+  console.log("Express server listening on port %d in %s mode", app.get("port"), app.settings.env);
 });

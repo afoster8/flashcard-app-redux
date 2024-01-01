@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("./User");
-const Deck = require("./Deck");
+const User = require("../models/User");
+const Deck = require("../models/Deck");
 
 /* verify that the token sent with the request is valid */
 const verifyToken = (req, res, next) => {

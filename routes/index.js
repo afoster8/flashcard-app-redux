@@ -1,0 +1,1 @@
+exports.flashcardRouter = require("./auth.js");
