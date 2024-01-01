@@ -9,7 +9,7 @@
 /* Used by CreateNewDeck, ImportDeck, ViewAllDecks, EditDeck, Folders */
 export const fetchFolders = async ({ setFolders, setError }) => {
   try {
-    const response = await fetch("https://intense-atoll-92670/auth/get-folders", {
+    const response = await fetch("https://intense-atoll-92670.herokuapp.com/auth/get-folders", {
       method: "GET",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       credentials: "include",
@@ -36,7 +36,7 @@ export const fetchFolders = async ({ setFolders, setError }) => {
 /* Used by Folders */
 export const saveFolders = async ({ folders, setError }) => {
   try {
-    const response = await fetch(`https://intense-atoll-92670/auth/update-folders`, {
+    const response = await fetch(`https://intense-atoll-92670.herokuapp.com/auth/update-folders`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export const saveFolders = async ({ folders, setError }) => {
 /* Used by ViewAllDecks, Flashcards, EditDeck */
 export const fetchDeck = async ({ id, setDeck, setError }) => {
   try {
-    const response = await fetch(`https://intense-atoll-92670/auth/get-deck/${id}`, {
+    const response = await fetch(`https://intense-atoll-92670.herokuapp.com/auth/get-deck/${id}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       credentials: "include",
@@ -90,7 +90,7 @@ export const fetchDeck = async ({ id, setDeck, setError }) => {
 /* GET the decks field from the user account from db */
 export const fetchDecks = async ({ setDecks, setError }) => {
   try {
-    const response = await fetch("https://intense-atoll-92670/auth/get-decks", {
+    const response = await fetch("https://intense-atoll-92670.herokuapp.com/auth/get-decks", {
       method: "GET",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       credentials: "include",
@@ -115,7 +115,7 @@ export const fetchDecks = async ({ setDecks, setError }) => {
 /* Used by CreateNewDeck, ImportDeck */
 export const createNewDeck = async ({ deckName, cards, folderArray, setDeckName, setError }) => {
   try {
-    const response = await fetch("https://intense-atoll-92670/auth/create-deck", {
+    const response = await fetch("https://intense-atoll-92670.herokuapp.com/auth/create-deck", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -150,7 +150,7 @@ export const createNewDeck = async ({ deckName, cards, folderArray, setDeckName,
 /* Used by EditDeck */
 export const saveDeck = async ({ id, deck, setError }) => {
   try {
-    const response = await fetch(`https://intense-atoll-92670/auth/update-deck/${id}`, {
+    const response = await fetch(`https://intense-atoll-92670.herokuapp.com/auth/update-deck/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -178,7 +178,7 @@ export const saveDeck = async ({ id, deck, setError }) => {
 /* Used by EditDeck */
 export const deleteDeck = async ({ id, setError }) => {
   try {
-    const response = await fetch(`https://intense-atoll-92670/auth/delete-deck/${id}`, {
+    const response = await fetch(`https://intense-atoll-92670.herokuapp.com/auth/delete-deck/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       credentials: "include",
@@ -203,7 +203,7 @@ export const deleteDeck = async ({ id, setError }) => {
 /* Used by Flashcards */
 export const toggleStarred = async ({ deck, currentDeck, deckId, cardId, starred, setDeck, setCurrentDeck, setError }) => {
   try {
-    const response = await fetch(`https://intense-atoll-92670/auth/update-card/${deckId}/${cardId}`, {
+    const response = await fetch(`https://intense-atoll-92670.herokuapp.com/auth/update-card/${deckId}/${cardId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -256,7 +256,7 @@ export const toggleStarred = async ({ deck, currentDeck, deckId, cardId, starred
 /* Used by UserAccount */
 export const deleteAccount = async ({ setLoggedIn, setError }) => {
   try {
-    const response = await fetch("https://intense-atoll-92670/auth/delete-account", {
+    const response = await fetch("https://intense-atoll-92670.herokuapp.com/auth/delete-account", {
       method: "DELETE",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       credentials: "include",
@@ -284,7 +284,7 @@ export const deleteAccount = async ({ setLoggedIn, setError }) => {
 /* Used by UserAccount */
 export const updateUsername = async ({ newUsername, setNewUsername, setError }) => {
   try {
-    const response = await fetch("https://intense-atoll-92670/auth/update-username", {
+    const response = await fetch("https://intense-atoll-92670.herokuapp.com/auth/update-username", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -313,7 +313,7 @@ export const updateUsername = async ({ newUsername, setNewUsername, setError }) 
 /* Used by UserAccount */
 export const updatePin = async ({ newPin, setNewPin, setReenteredPin, setError }) => {
   try {
-    const response = await fetch("https://intense-atoll-92670/auth/update-pin", {
+    const response = await fetch("https://intense-atoll-92670.herokuapp.com/auth/update-pin", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
