@@ -28,7 +28,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 
 app.get("/", function(req, res) {
-  res.render("index");
+  res.render("./frontend/src/index");
 });
 
 app.set("port", process.env.PORT || 3001);
