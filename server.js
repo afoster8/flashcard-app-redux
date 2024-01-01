@@ -6,12 +6,15 @@ const authRoutes = require("./models/auth");
 const app = express();
 const port = process.env.PORT || 3001;
 
+console.log("here");
+
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
   optionSuccessStatus: 200,
   exposedHeaders: ["Authorization"],
 }
+
 
 app.options("/auth", cors(corsOptions));
 

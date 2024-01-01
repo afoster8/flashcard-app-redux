@@ -42,12 +42,7 @@ const Register = () => {
       navigate("/login");
 
     } catch (error) {
-      if (error.response.data) {
-        setError(error.response.data.error);
-      } else {
-        console.error(error);
-        setError("An error occurred. Please try again.");
-      }
+      setError("An error occurred. Please try again.");
     }
   };
 
