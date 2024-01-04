@@ -4,17 +4,17 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 /* component imports */
 import Sidebar from "./components/Sidebar";
-import Home from "./pages/Home";
-import ViewAllDecks from "./pages/ViewAllDecks";
-import CreateNewDeck from "./pages/CreateNewDeck";
-import ImportDeck from "./pages/ImportDeck";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import NoPage from "./pages/NoPage";
-import EditDeck from "./pages/EditDeck";
-import Flashcards from "./pages/Flashcards";
-import Folders from "./pages/Folders";
-import UserAccount from "./pages/UserAccount";
+import Home from "./routes/Home";
+import ViewAllDecks from "./routes/ViewAllDecks";
+import CreateNewDeck from "./routes/CreateNewDeck";
+import ImportDeck from "./routes/ImportDeck";
+import Login from "./routes/Login";
+import Register from "./routes/Register";
+import NoPage from "./routes/NoPage";
+import EditDeck from "./routes/EditDeck";
+import Flashcards from "./routes/Flashcards";
+import Folders from "./routes/Folders";
+import UserAccount from "./routes/UserAccount";
 import "./index.css";
 
 /* it all starts from here */
